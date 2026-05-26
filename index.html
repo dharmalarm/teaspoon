@@ -1,0 +1,1190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maker Estimator</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F5F0E8;
+    --surface: #FFFDF8;
+    --surface2: #EDE8DC;
+    --border: #D4CDB8;
+    --text: #1A1714;
+    --text-muted: #6B6458;
+    --accent: #C4400A;
+    --accent-light: #F2E4DC;
+    --accent2: #2A5C45;
+    --accent2-light: #DCF0E8;
+    --mono: 'DM Mono', monospace;
+    --serif: 'DM Serif Display', serif;
+    --sans: 'DM Sans', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── Header ── */
+  header {
+    background: var(--text);
+    color: var(--bg);
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 56px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .logo {
+    font-family: var(--serif);
+    font-size: 1.3rem;
+    letter-spacing: 0.02em;
+    color: var(--bg);
+  }
+  .logo span { color: #C4400A; }
+
+  /* ── Nav ── */
+  nav {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    overflow-x: auto;
+    scrollbar-width: none;
+    position: sticky;
+    top: 56px;
+    z-index: 99;
+  }
+  nav::-webkit-scrollbar { display: none; }
+  .nav-btn {
+    flex-shrink: 0;
+    padding: 14px 20px;
+    font-family: var(--sans);
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .nav-btn:hover { color: var(--text); }
+  .nav-btn.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  /* ── Main ── */
+  main {
+    flex: 1;
+    padding: 24px 16px;
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .view { display: none; }
+  .view.active { display: block; }
+
+  .view-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .view-title {
+    font-family: var(--serif);
+    font-size: 1.8rem;
+    color: var(--text);
+  }
+
+  /* ── Buttons ── */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 16px;
+    border-radius: 6px;
+    font-family: var(--sans);
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    border: none;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: white;
+  }
+  .btn-primary:hover { background: #A03308; }
+  .btn-secondary {
+    background: var(--surface2);
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { background: var(--border); }
+  .btn-ghost {
+    background: none;
+    color: var(--text-muted);
+    padding: 6px 10px;
+  }
+  .btn-ghost:hover { color: var(--accent); background: var(--accent-light); }
+  .btn-danger {
+    background: none;
+    color: #B03030;
+    padding: 6px 10px;
+  }
+  .btn-danger:hover { background: #FDE8E8; }
+  .btn-sm { padding: 6px 12px; font-size: 0.78rem; }
+
+  /* ── Cards ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 10px;
+    transition: box-shadow 0.15s;
+  }
+  .card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .card-title {
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+  .card-sub {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+    font-family: var(--mono);
+  }
+  .card-actions { display: flex; gap: 4px; }
+
+  /* ── Forms ── */
+  .form-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  .form-panel h3 {
+    font-family: var(--serif);
+    font-size: 1.1rem;
+    margin-bottom: 16px;
+    color: var(--text);
+  }
+  .form-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+    min-width: 120px;
+  }
+  .form-group label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  input, select, textarea {
+    font-family: var(--sans);
+    font-size: 0.88rem;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--bg);
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.15s;
+    width: 100%;
+  }
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--accent);
+    background: white;
+  }
+  textarea { resize: vertical; min-height: 70px; }
+
+  /* ── Tags / badges ── */
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+  .badge-green { background: var(--accent2-light); color: var(--accent2); }
+  .badge-orange { background: var(--accent-light); color: var(--accent); }
+
+  /* ── Ingredient rows in recipe ── */
+  .ing-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--surface2);
+  }
+  .ing-row:last-child { border-bottom: none; }
+  .ing-name { flex: 2; font-size: 0.88rem; }
+  .ing-amount { flex: 1; }
+  .ing-uom { flex: 1; font-size: 0.8rem; color: var(--text-muted); font-family: var(--mono); }
+
+  /* ── Estimates table ── */
+  .est-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+  }
+  .est-table th {
+    text-align: left;
+    padding: 8px 12px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+  }
+  .est-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--surface2);
+    vertical-align: middle;
+  }
+  .est-table tr:last-child td { border-bottom: none; }
+  .est-table .num {
+    font-family: var(--mono);
+    text-align: right;
+  }
+  .est-table tfoot td {
+    font-weight: 600;
+    background: var(--surface2);
+    border-top: 2px solid var(--border);
+  }
+
+  /* ── Summary boxes ── */
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .summary-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    text-align: center;
+  }
+  .summary-box .val {
+    font-family: var(--serif);
+    font-size: 1.6rem;
+    color: var(--accent);
+  }
+  .summary-box .lbl {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  /* ── Menu selector ── */
+  .menu-selector {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .menu-selector label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .menu-selector select { max-width: 260px; flex: 1; }
+
+  /* ── Prep tasks ── */
+  .task-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--surface2);
+  }
+  .task-row:last-child { border-bottom: none; }
+  .task-check {
+    width: 18px; height: 18px;
+    border: 2px solid var(--border);
+    border-radius: 4px;
+    cursor: pointer;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+  }
+  .task-check.done {
+    background: var(--accent2);
+    border-color: var(--accent2);
+    color: white;
+  }
+  .task-text { flex: 1; font-size: 0.88rem; }
+  .task-text.done { text-decoration: line-through; color: var(--text-muted); }
+
+  /* ── Shopping list ── */
+  .shop-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 11px 0;
+    border-bottom: 1px solid var(--surface2);
+    font-size: 0.88rem;
+  }
+  .shop-item:last-child { border-bottom: none; }
+  .shop-qty {
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    color: var(--accent);
+    font-weight: 500;
+    white-space: nowrap;
+    margin-left: 12px;
+  }
+
+  /* ── Empty state ── */
+  .empty {
+    text-align: center;
+    padding: 48px 24px;
+    color: var(--text-muted);
+  }
+  .empty-icon { font-size: 2.5rem; margin-bottom: 12px; opacity: 0.4; }
+  .empty p { font-size: 0.88rem; margin-top: 6px; }
+
+  /* ── Divider ── */
+  .divider { height: 1px; background: var(--border); margin: 16px 0; }
+
+  /* ── Collapsible ── */
+  .collapsible-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    padding: 4px 0;
+    user-select: none;
+  }
+  .collapsible-body { display: none; padding-top: 12px; }
+  .collapsible-body.open { display: block; }
+  .caret { font-size: 0.7rem; color: var(--text-muted); transition: transform 0.2s; }
+  .caret.open { transform: rotate(90deg); }
+
+  @media (max-width: 500px) {
+    .view-title { font-size: 1.4rem; }
+    .summary-box .val { font-size: 1.3rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Maker<span>.</span>Estimator</div>
+</header>
+
+<nav id="mainNav">
+  <button class="nav-btn active" onclick="showView('ingredients')">Ingredients</button>
+  <button class="nav-btn" onclick="showView('recipes')">Recipes</button>
+  <button class="nav-btn" onclick="showView('menus')">Menus</button>
+  <button class="nav-btn" onclick="showView('estimates')">Estimates</button>
+  <button class="nav-btn" onclick="showView('shopping')">Shopping List</button>
+  <button class="nav-btn" onclick="showView('prep')">Prep Tasks</button>
+</nav>
+
+<main>
+
+<!-- ══════════════════════════════════════════
+     INGREDIENTS
+══════════════════════════════════════════ -->
+<div id="view-ingredients" class="view active">
+  <div class="view-header">
+    <div class="view-title">Ingredients</div>
+    <button class="btn btn-primary" onclick="toggleIngForm()">+ Add Ingredient</button>
+  </div>
+
+  <div class="form-panel" id="ingForm" style="display:none">
+    <h3>New Ingredient</h3>
+    <div class="form-row">
+      <div class="form-group" style="flex:3">
+        <label>Name</label>
+        <input id="ing-name" type="text" placeholder="e.g. Bourbon">
+      </div>
+      <div class="form-group" style="flex:2">
+        <label>Unit of Measure</label>
+        <input id="ing-uom" type="text" placeholder="e.g. ounce, piece, dash">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Unit Size</label>
+        <input id="ing-size" type="number" placeholder="e.g. 25" min="0" step="any">
+      </div>
+      <div class="form-group">
+        <label>Unit Price ($)</label>
+        <input id="ing-price" type="number" placeholder="e.g. 20.00" min="0" step="0.01">
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:4px">
+      <button class="btn btn-primary" onclick="saveIngredient()">Save</button>
+      <button class="btn btn-secondary" onclick="toggleIngForm()">Cancel</button>
+    </div>
+  </div>
+
+  <div id="ingList"></div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     RECIPES
+══════════════════════════════════════════ -->
+<div id="view-recipes" class="view">
+  <div class="view-header">
+    <div class="view-title">Recipes</div>
+    <button class="btn btn-primary" onclick="toggleRecipeForm()">+ Add Recipe</button>
+  </div>
+
+  <div class="form-panel" id="recipeForm" style="display:none">
+    <h3>New Recipe</h3>
+    <div class="form-row">
+      <div class="form-group" style="flex:3">
+        <label>Recipe Name</label>
+        <input id="rec-name" type="text" placeholder="e.g. Sour Whiskers">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Description (optional)</label>
+        <textarea id="rec-desc" placeholder="Brief description..."></textarea>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+      <div style="font-size:0.8rem;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;color:var(--text-muted)">Ingredients</div>
+      <button class="btn btn-secondary btn-sm" onclick="addIngRow()">+ Add</button>
+    </div>
+    <div id="recIngRows"></div>
+    <div style="display:flex;gap:8px;margin-top:16px">
+      <button class="btn btn-primary" onclick="saveRecipe()">Save Recipe</button>
+      <button class="btn btn-secondary" onclick="toggleRecipeForm()">Cancel</button>
+    </div>
+  </div>
+
+  <div id="recipeList"></div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     MENUS
+══════════════════════════════════════════ -->
+<div id="view-menus" class="view">
+  <div class="view-header">
+    <div class="view-title">Menus</div>
+    <button class="btn btn-primary" onclick="toggleMenuForm()">+ New Menu</button>
+  </div>
+
+  <div class="form-panel" id="menuForm" style="display:none">
+    <h3>New Menu</h3>
+    <div class="form-row">
+      <div class="form-group" style="flex:3">
+        <label>Menu Name</label>
+        <input id="menu-name" type="text" placeholder="e.g. Sarah's Birthday Party">
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+      <div style="font-size:0.8rem;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;color:var(--text-muted)">Recipes & Quantities</div>
+      <button class="btn btn-secondary btn-sm" onclick="addMenuRecipeRow()">+ Add Recipe</button>
+    </div>
+    <div id="menuRecipeRows"></div>
+    <div style="display:flex;gap:8px;margin-top:16px">
+      <button class="btn btn-primary" onclick="saveMenu()">Save Menu</button>
+      <button class="btn btn-secondary" onclick="toggleMenuForm()">Cancel</button>
+    </div>
+  </div>
+
+  <div id="menuList"></div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     ESTIMATES
+══════════════════════════════════════════ -->
+<div id="view-estimates" class="view">
+  <div class="view-header">
+    <div class="view-title">Estimates</div>
+  </div>
+
+  <div class="menu-selector">
+    <label>Menu</label>
+    <select id="est-menu-select" onchange="renderEstimates()">
+      <option value="">— Select a menu —</option>
+    </select>
+  </div>
+
+  <div id="estimatesContent">
+    <div class="empty">
+      <div class="empty-icon">📊</div>
+      <strong>Select a menu to see estimates</strong>
+      <p>Cost breakdowns will appear here.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SHOPPING LIST
+══════════════════════════════════════════ -->
+<div id="view-shopping" class="view">
+  <div class="view-header">
+    <div class="view-title">Shopping List</div>
+  </div>
+
+  <div class="menu-selector">
+    <label>Menu</label>
+    <select id="shop-menu-select" onchange="renderShoppingList()">
+      <option value="">— Select a menu —</option>
+    </select>
+  </div>
+
+  <div id="shoppingContent">
+    <div class="empty">
+      <div class="empty-icon">🛒</div>
+      <strong>Select a menu to generate a shopping list</strong>
+      <p>Items will be calculated automatically.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PREP TASKS
+══════════════════════════════════════════ -->
+<div id="view-prep" class="view">
+  <div class="view-header">
+    <div class="view-title">Prep Tasks</div>
+  </div>
+
+  <div class="menu-selector">
+    <label>Menu</label>
+    <select id="prep-menu-select" onchange="renderPrepTasks()">
+      <option value="">— Select a menu —</option>
+    </select>
+  </div>
+
+  <div id="prepContent">
+    <div class="empty">
+      <div class="empty-icon">✅</div>
+      <strong>Select a menu to manage prep tasks</strong>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<script>
+// ══════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════
+let state = {
+  ingredients: [
+    { id: 1, name: 'Bourbon', uom: 'ounce', size: 25, price: 20 },
+    { id: 2, name: 'Vodka', uom: 'ounce', size: 25, price: 20 },
+    { id: 3, name: 'Tequila', uom: 'ounce', size: 25, price: 20 },
+    { id: 4, name: 'Gin', uom: 'ounce', size: 25, price: 20 },
+    { id: 5, name: 'Cointreau', uom: 'ounce', size: 25, price: 40 },
+    { id: 6, name: 'Lemon Juice', uom: 'ounce', size: 1, price: 0.75 },
+    { id: 7, name: 'Simple Syrup', uom: 'ounce', size: 33.8, price: 10 },
+    { id: 8, name: 'Lime Juice', uom: 'ounce', size: 0.75, price: 0.50 },
+    { id: 9, name: 'Luxardo Cherry', uom: 'piece', size: 50, price: 16 },
+    { id: 10, name: 'Fee Foam', uom: 'dash', size: 128, price: 5 },
+    { id: 11, name: 'Angostura Bitters', uom: 'dash', size: 128, price: 10 },
+    { id: 12, name: 'Honey Syrup', uom: 'ounce', size: 12, price: 5 },
+    { id: 13, name: 'Lavender Bitters', uom: 'dash', size: 128, price: 20 },
+  ],
+  recipes: [
+    {
+      id: 1, name: 'Sour Whiskers', desc: 'A bourbon sour with cherry garnish',
+      ingredients: [
+        { ingId: 1, amount: 2 },
+        { ingId: 6, amount: 0.75 },
+        { ingId: 7, amount: 0.75 },
+        { ingId: 9, amount: 1 },
+        { ingId: 10, amount: 8 },
+        { ingId: 11, amount: 2 },
+      ]
+    },
+    {
+      id: 2, name: 'Murderita', desc: 'A bold tequila margarita',
+      ingredients: [
+        { ingId: 3, amount: 2 },
+        { ingId: 5, amount: 0.75 },
+        { ingId: 8, amount: 0.75 },
+        { ingId: 7, amount: 0.5 },
+      ]
+    },
+    {
+      id: 3, name: "Rosemary's Baby", desc: 'Vodka with tonic and citrus',
+      ingredients: [
+        { ingId: 2, amount: 2 },
+        { ingId: 8, amount: 0.5 },
+        { ingId: 6, amount: 0.5 },
+        { ingId: 7, amount: 0.5 },
+      ]
+    },
+    {
+      id: 4, name: 'Drag Queen Bee', desc: "Gin and honey, lavender bitters",
+      ingredients: [
+        { ingId: 4, amount: 2 },
+        { ingId: 12, amount: 0.75 },
+        { ingId: 6, amount: 0.75 },
+        { ingId: 10, amount: 8 },
+        { ingId: 13, amount: 3 },
+      ]
+    },
+  ],
+  menus: [
+    {
+      id: 1, name: "Sarah's Birthday Party",
+      items: [
+        { recipeId: 1, qty: 30 },
+        { recipeId: 2, qty: 30 },
+        { recipeId: 3, qty: 30 },
+        { recipeId: 4, qty: 30 },
+      ],
+      tasks: [
+        { id: 1, text: 'Squeeze lemons and store in bottles', done: false },
+        { id: 2, text: 'Squeeze limes and store in bottles', done: false },
+        { id: 3, text: 'Make honey syrup (heat 12oz water + 12oz honey)', done: false },
+        { id: 4, text: 'Cut lemon peels at party', done: false },
+        { id: 5, text: 'Transfer booze into smaller bottles', done: false },
+        { id: 6, text: 'Fill cooler with ice for shaking', done: false },
+      ]
+    }
+  ],
+  nextIngId: 14,
+  nextRecId: 5,
+  nextMenuId: 2,
+};
+
+// ══════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════
+function showView(name) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('view-' + name).classList.add('active');
+  event.target.classList.add('active');
+
+  if (name === 'estimates') { populateMenuSelect('est-menu-select'); renderEstimates(); }
+  if (name === 'shopping') { populateMenuSelect('shop-menu-select'); renderShoppingList(); }
+  if (name === 'prep') { populateMenuSelect('prep-menu-select'); renderPrepTasks(); }
+  if (name === 'ingredients') renderIngredients();
+  if (name === 'recipes') renderRecipes();
+  if (name === 'menus') renderMenus();
+}
+
+function populateMenuSelect(id) {
+  const sel = document.getElementById(id);
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">— Select a menu —</option>';
+  state.menus.forEach(m => {
+    const opt = document.createElement('option');
+    opt.value = m.id;
+    opt.textContent = m.name;
+    sel.appendChild(opt);
+  });
+  if (cur) sel.value = cur;
+}
+
+// ══════════════════════════════════════════
+// INGREDIENTS
+// ══════════════════════════════════════════
+function toggleIngForm() {
+  const f = document.getElementById('ingForm');
+  f.style.display = f.style.display === 'none' ? 'block' : 'none';
+  if (f.style.display === 'block') document.getElementById('ing-name').focus();
+}
+
+function saveIngredient() {
+  const name = document.getElementById('ing-name').value.trim();
+  const uom = document.getElementById('ing-uom').value.trim();
+  const size = parseFloat(document.getElementById('ing-size').value);
+  const price = parseFloat(document.getElementById('ing-price').value);
+  if (!name || !uom || isNaN(size) || isNaN(price)) { alert('Please fill in all fields.'); return; }
+  state.ingredients.push({ id: state.nextIngId++, name, uom, size, price });
+  ['ing-name','ing-uom','ing-size','ing-price'].forEach(id => document.getElementById(id).value = '');
+  toggleIngForm();
+  renderIngredients();
+}
+
+function deleteIngredient(id) {
+  if (!confirm('Delete this ingredient?')) return;
+  state.ingredients = state.ingredients.filter(i => i.id !== id);
+  renderIngredients();
+}
+
+function renderIngredients() {
+  const el = document.getElementById('ingList');
+  if (!state.ingredients.length) {
+    el.innerHTML = `<div class="empty"><div class="empty-icon">🧂</div><strong>No ingredients yet</strong><p>Add your first ingredient above.</p></div>`;
+    return;
+  }
+  el.innerHTML = state.ingredients.map(ing => `
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">${ing.name}</div>
+          <div class="card-sub">${ing.size} ${ing.uom}${ing.size !== 1 ? 's' : ''} / unit &nbsp;·&nbsp; $${ing.price.toFixed(2)} per unit &nbsp;·&nbsp; $${(ing.price/ing.size).toFixed(3)} per ${ing.uom}</div>
+        </div>
+        <div class="card-actions">
+          <button class="btn btn-danger" onclick="deleteIngredient(${ing.id})">✕</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ══════════════════════════════════════════
+// RECIPES
+// ══════════════════════════════════════════
+function toggleRecipeForm() {
+  const f = document.getElementById('recipeForm');
+  f.style.display = f.style.display === 'none' ? 'block' : 'none';
+  if (f.style.display === 'block') {
+    document.getElementById('recIngRows').innerHTML = '';
+    addIngRow();
+    document.getElementById('rec-name').focus();
+  }
+}
+
+function addIngRow() {
+  const container = document.getElementById('recIngRows');
+  const row = document.createElement('div');
+  row.className = 'ing-row';
+  const opts = state.ingredients.map(i => `<option value="${i.id}">${i.name} (${i.uom})</option>`).join('');
+  row.innerHTML = `
+    <select class="ing-name" style="flex:3">${opts}</select>
+    <input class="ing-amount" type="number" placeholder="Amount" min="0" step="any" style="flex:1;max-width:90px">
+    <button class="btn btn-danger" style="padding:4px 8px;flex-shrink:0" onclick="this.parentElement.remove()">✕</button>
+  `;
+  container.appendChild(row);
+}
+
+function saveRecipe() {
+  const name = document.getElementById('rec-name').value.trim();
+  const desc = document.getElementById('rec-desc').value.trim();
+  if (!name) { alert('Recipe name is required.'); return; }
+  const rows = document.querySelectorAll('#recIngRows .ing-row');
+  const ingredients = [];
+  rows.forEach(row => {
+    const ingId = parseInt(row.querySelector('select').value);
+    const amount = parseFloat(row.querySelector('input').value);
+    if (ingId && !isNaN(amount) && amount > 0) ingredients.push({ ingId, amount });
+  });
+  state.recipes.push({ id: state.nextRecId++, name, desc, ingredients });
+  document.getElementById('rec-name').value = '';
+  document.getElementById('rec-desc').value = '';
+  toggleRecipeForm();
+  renderRecipes();
+}
+
+function deleteRecipe(id) {
+  if (!confirm('Delete this recipe?')) return;
+  state.recipes = state.recipes.filter(r => r.id !== id);
+  renderRecipes();
+}
+
+function costPerUnit(ing, amount) {
+  return (ing.price / ing.size) * amount;
+}
+
+function recipeCost(recipe) {
+  return recipe.ingredients.reduce((sum, ri) => {
+    const ing = state.ingredients.find(i => i.id === ri.ingId);
+    return sum + (ing ? costPerUnit(ing, ri.amount) : 0);
+  }, 0);
+}
+
+function renderRecipes() {
+  const el = document.getElementById('recipeList');
+  if (!state.recipes.length) {
+    el.innerHTML = `<div class="empty"><div class="empty-icon">📋</div><strong>No recipes yet</strong><p>Add your first recipe above.</p></div>`;
+    return;
+  }
+  el.innerHTML = state.recipes.map(rec => {
+    const cost = recipeCost(rec);
+    const ingLines = rec.ingredients.map(ri => {
+      const ing = state.ingredients.find(i => i.id === ri.ingId);
+      return ing ? `<div class="ing-row"><span class="ing-name">${ing.name}</span><span class="ing-uom">${ri.amount} ${ing.uom}</span></div>` : '';
+    }).join('');
+    return `
+    <div class="card">
+      <div class="collapsible-header" onclick="toggleCollapse(this)">
+        <div>
+          <div class="card-title">${rec.name}</div>
+          <div class="card-sub">Cost per unit: $${cost.toFixed(2)} &nbsp;·&nbsp; ${rec.ingredients.length} ingredient${rec.ingredients.length !== 1 ? 's' : ''}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <button class="btn btn-danger btn-sm" onclick="event.stopPropagation();deleteRecipe(${rec.id})">✕</button>
+          <span class="caret">▶</span>
+        </div>
+      </div>
+      <div class="collapsible-body">
+        ${rec.desc ? `<p style="font-size:0.83rem;color:var(--text-muted);margin-bottom:10px">${rec.desc}</p>` : ''}
+        ${ingLines}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleCollapse(header) {
+  const body = header.nextElementSibling;
+  const caret = header.querySelector('.caret');
+  body.classList.toggle('open');
+  caret.classList.toggle('open');
+}
+
+// ══════════════════════════════════════════
+// MENUS
+// ══════════════════════════════════════════
+function toggleMenuForm() {
+  const f = document.getElementById('menuForm');
+  f.style.display = f.style.display === 'none' ? 'block' : 'none';
+  if (f.style.display === 'block') {
+    document.getElementById('menuRecipeRows').innerHTML = '';
+    addMenuRecipeRow();
+    document.getElementById('menu-name').focus();
+  }
+}
+
+function addMenuRecipeRow() {
+  const container = document.getElementById('menuRecipeRows');
+  const row = document.createElement('div');
+  row.className = 'ing-row';
+  const opts = state.recipes.map(r => `<option value="${r.id}">${r.name}</option>`).join('');
+  row.innerHTML = `
+    <select style="flex:3">${opts}</select>
+    <input type="number" placeholder="Qty" min="1" step="1" value="10" style="flex:1;max-width:80px">
+    <button class="btn btn-danger" style="padding:4px 8px;flex-shrink:0" onclick="this.parentElement.remove()">✕</button>
+  `;
+  container.appendChild(row);
+}
+
+function saveMenu() {
+  const name = document.getElementById('menu-name').value.trim();
+  if (!name) { alert('Menu name is required.'); return; }
+  const rows = document.querySelectorAll('#menuRecipeRows .ing-row');
+  const items = [];
+  rows.forEach(row => {
+    const recipeId = parseInt(row.querySelector('select').value);
+    const qty = parseInt(row.querySelector('input').value);
+    if (recipeId && qty > 0) items.push({ recipeId, qty });
+  });
+  state.menus.push({ id: state.nextMenuId++, name, items, tasks: [] });
+  document.getElementById('menu-name').value = '';
+  toggleMenuForm();
+  renderMenus();
+}
+
+function deleteMenu(id) {
+  if (!confirm('Delete this menu?')) return;
+  state.menus = state.menus.filter(m => m.id !== id);
+  renderMenus();
+}
+
+function renderMenus() {
+  const el = document.getElementById('menuList');
+  if (!state.menus.length) {
+    el.innerHTML = `<div class="empty"><div class="empty-icon">📁</div><strong>No menus yet</strong><p>Create your first menu above.</p></div>`;
+    return;
+  }
+  el.innerHTML = state.menus.map(menu => {
+    const totalCost = menu.items.reduce((sum, item) => {
+      const rec = state.recipes.find(r => r.id === item.recipeId);
+      return sum + (rec ? recipeCost(rec) * item.qty : 0);
+    }, 0);
+    const totalUnits = menu.items.reduce((sum, item) => sum + item.qty, 0);
+    const lines = menu.items.map(item => {
+      const rec = state.recipes.find(r => r.id === item.recipeId);
+      return rec ? `<div class="ing-row"><span class="ing-name">${rec.name}</span><span class="ing-uom">${item.qty} units</span></div>` : '';
+    }).join('');
+    return `
+    <div class="card">
+      <div class="collapsible-header" onclick="toggleCollapse(this)">
+        <div>
+          <div class="card-title">${menu.name}</div>
+          <div class="card-sub">${menu.items.length} recipe${menu.items.length !== 1 ? 's' : ''} &nbsp;·&nbsp; ${totalUnits} total units &nbsp;·&nbsp; est. $${totalCost.toFixed(2)}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <button class="btn btn-danger btn-sm" onclick="event.stopPropagation();deleteMenu(${menu.id})">✕</button>
+          <span class="caret">▶</span>
+        </div>
+      </div>
+      <div class="collapsible-body">${lines}</div>
+    </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════
+// ESTIMATES
+// ══════════════════════════════════════════
+function renderEstimates() {
+  const menuId = parseInt(document.getElementById('est-menu-select').value);
+  const el = document.getElementById('estimatesContent');
+  if (!menuId) {
+    el.innerHTML = `<div class="empty"><div class="empty-icon">📊</div><strong>Select a menu to see estimates</strong></div>`;
+    return;
+  }
+  const menu = state.menus.find(m => m.id === menuId);
+  if (!menu) return;
+
+  // Aggregate ingredient usage
+  const ingUsage = {}; // ingId -> { units consumed, units opened, total cost }
+  menu.items.forEach(item => {
+    const rec = state.recipes.find(r => r.id === item.recipeId);
+    if (!rec) return;
+    rec.ingredients.forEach(ri => {
+      const ing = state.ingredients.find(i => i.id === ri.ingId);
+      if (!ing) return;
+      if (!ingUsage[ri.ingId]) ingUsage[ri.ingId] = { ing, consumed: 0, cost: 0 };
+      ingUsage[ri.ingId].consumed += ri.amount * item.qty;
+      ingUsage[ri.ingId].cost += costPerUnit(ing, ri.amount) * item.qty;
+    });
+  });
+
+  // Compute unitsOpened
+  Object.values(ingUsage).forEach(u => {
+    u.unitsOpened = Math.ceil(u.consumed / u.ing.size);
+    u.unitsCost = u.unitsOpened * u.ing.price;
+  });
+
+  const totalIngCost = Object.values(ingUsage).reduce((s, u) => s + u.cost, 0);
+  const totalUnitCost = Object.values(ingUsage).reduce((s, u) => s + u.unitsCost, 0);
+  const totalUnits = menu.items.reduce((s, i) => s + i.qty, 0);
+
+  const recipeRows = menu.items.map(item => {
+    const rec = state.recipes.find(r => r.id === item.recipeId);
+    if (!rec) return '';
+    const cost = recipeCost(rec);
+    return `<tr>
+      <td>${rec.name}</td>
+      <td class="num">${item.qty}</td>
+      <td class="num">$${cost.toFixed(2)}</td>
+      <td class="num">$${(cost * item.qty).toFixed(2)}</td>
+    </tr>`;
+  }).join('');
+
+  const ingRows = Object.values(ingUsage).map(u => `
+    <tr>
+      <td>${u.ing.name}</td>
+      <td class="num">${u.consumed.toFixed(2)} ${u.ing.uom}s</td>
+      <td class="num">${u.unitsOpened} unit${u.unitsOpened !== 1 ? 's' : ''}</td>
+      <td class="num">$${u.cost.toFixed(2)}</td>
+      <td class="num">$${u.unitsCost.toFixed(2)}</td>
+    </tr>
+  `).join('');
+
+  el.innerHTML = `
+    <div class="summary-grid">
+      <div class="summary-box">
+        <div class="val">${totalUnits}</div>
+        <div class="lbl">Total Units</div>
+      </div>
+      <div class="summary-box">
+        <div class="val">$${totalIngCost.toFixed(2)}</div>
+        <div class="lbl">Ingredient Cost</div>
+      </div>
+      <div class="summary-box">
+        <div class="val">$${totalUnitCost.toFixed(2)}</div>
+        <div class="lbl">Units Cost (opened)</div>
+      </div>
+      <div class="summary-box">
+        <div class="val">$${(totalIngCost / totalUnits).toFixed(2)}</div>
+        <div class="lbl">Avg Cost / Unit</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:16px">
+      <div style="font-size:0.78rem;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;color:var(--text-muted);margin-bottom:12px">By Recipe</div>
+      <table class="est-table">
+        <thead><tr><th>Recipe</th><th style="text-align:right">Qty</th><th style="text-align:right">Cost/Unit</th><th style="text-align:right">Total</th></tr></thead>
+        <tbody>${recipeRows}</tbody>
+        <tfoot><tr><td>Total</td><td class="num">${totalUnits}</td><td></td><td class="num">$${totalIngCost.toFixed(2)}</td></tr></tfoot>
+      </table>
+    </div>
+
+    <div class="card">
+      <div style="font-size:0.78rem;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;color:var(--text-muted);margin-bottom:12px">By Ingredient</div>
+      <table class="est-table">
+        <thead><tr><th>Ingredient</th><th style="text-align:right">Consumed</th><th style="text-align:right">Units Opened</th><th style="text-align:right">Ingredient $</th><th style="text-align:right">Units $</th></tr></thead>
+        <tbody>${ingRows}</tbody>
+        <tfoot><tr><td>Total</td><td></td><td></td><td class="num">$${totalIngCost.toFixed(2)}</td><td class="num">$${totalUnitCost.toFixed(2)}</td></tr></tfoot>
+      </table>
+    </div>
+  `;
+}
+
+// ══════════════════════════════════════════
+// SHOPPING LIST
+// ══════════════════════════════════════════
+function renderShoppingList() {
+  const menuId = parseInt(document.getElementById('shop-menu-select').value);
+  const el = document.getElementById('shoppingContent');
+  if (!menuId) {
+    el.innerHTML = `<div class="empty"><div class="empty-icon">🛒</div><strong>Select a menu to generate a shopping list</strong></div>`;
+    return;
+  }
+  const menu = state.menus.find(m => m.id === menuId);
+  if (!menu) return;
+
+  const ingUsage = {};
+  menu.items.forEach(item => {
+    const rec = state.recipes.find(r => r.id === item.recipeId);
+    if (!rec) return;
+    rec.ingredients.forEach(ri => {
+      const ing = state.ingredients.find(i => i.id === ri.ingId);
+      if (!ing) return;
+      if (!ingUsage[ri.ingId]) ingUsage[ri.ingId] = { ing, consumed: 0 };
+      ingUsage[ri.ingId].consumed += ri.amount * item.qty;
+    });
+  });
+
+  const items = Object.values(ingUsage).map(u => ({
+    name: u.ing.name,
+    unitsNeeded: Math.ceil(u.consumed / u.ing.size),
+    uom: u.ing.uom,
+    size: u.ing.size,
+    price: u.ing.price,
+    totalCost: Math.ceil(u.consumed / u.ing.size) * u.ing.price,
+  })).sort((a, b) => a.name.localeCompare(b.name));
+
+  const totalCost = items.reduce((s, i) => s + i.totalCost, 0);
+
+  el.innerHTML = `
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <div style="font-size:0.78rem;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;color:var(--text-muted)">${items.length} items to buy</div>
+        <div style="font-family:var(--mono);font-size:0.88rem;font-weight:600;color:var(--accent)">Est. $${totalCost.toFixed(2)}</div>
+      </div>
+      ${items.map(i => `
+        <div class="shop-item">
+          <div>
+            <div style="font-weight:500">${i.name}</div>
+            <div style="font-size:0.75rem;color:var(--text-muted)">${i.unitsNeeded} × ${i.size} ${i.uom} unit${i.unitsNeeded !== 1 ? 's' : ''} @ $${i.price.toFixed(2)} ea</div>
+          </div>
+          <div class="shop-qty">$${i.totalCost.toFixed(2)}</div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+// ══════════════════════════════════════════
+// PREP TASKS
+// ══════════════════════════════════════════
+function renderPrepTasks() {
+  const menuId = parseInt(document.getElementById('prep-menu-select').value);
+  const el = document.getElementById('prepContent');
+  if (!menuId) {
+    el.innerHTML = `<div class="empty"><div class="empty-icon">✅</div><strong>Select a menu to manage prep tasks</strong></div>`;
+    return;
+  }
+  const menu = state.menus.find(m => m.id === menuId);
+  if (!menu) return;
+
+  const taskHTML = menu.tasks.length ? menu.tasks.map(t => `
+    <div class="task-row">
+      <div class="task-check ${t.done ? 'done' : ''}" onclick="toggleTask(${menuId}, ${t.id})">
+        ${t.done ? '✓' : ''}
+      </div>
+      <div class="task-text ${t.done ? 'done' : ''}">${t.text}</div>
+      <button class="btn btn-danger" style="padding:4px 8px" onclick="deleteTask(${menuId}, ${t.id})">✕</button>
+    </div>
+  `).join('') : `<div style="padding:12px 0;color:var(--text-muted);font-size:0.85rem">No tasks yet — add one below.</div>`;
+
+  const done = menu.tasks.filter(t => t.done).length;
+
+  el.innerHTML = `
+    <div class="card" style="margin-bottom:12px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <div style="font-size:0.78rem;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;color:var(--text-muted)">Tasks</div>
+        ${menu.tasks.length ? `<div style="font-size:0.75rem;color:var(--text-muted)">${done} / ${menu.tasks.length} done</div>` : ''}
+      </div>
+      ${taskHTML}
+    </div>
+    <div class="form-panel">
+      <div class="form-row" style="align-items:flex-end">
+        <div class="form-group" style="flex:4">
+          <label>New Task</label>
+          <input id="new-task-input" type="text" placeholder="e.g. Squeeze lemons at home" onkeydown="if(event.key==='Enter')addTask(${menuId})">
+        </div>
+        <button class="btn btn-primary" onclick="addTask(${menuId})" style="flex-shrink:0;margin-bottom:1px">Add</button>
+      </div>
+    </div>
+  `;
+}
+
+function addTask(menuId) {
+  const input = document.getElementById('new-task-input');
+  const text = input.value.trim();
+  if (!text) return;
+  const menu = state.menus.find(m => m.id === menuId);
+  const newId = menu.tasks.length ? Math.max(...menu.tasks.map(t => t.id)) + 1 : 1;
+  menu.tasks.push({ id: newId, text, done: false });
+  input.value = '';
+  renderPrepTasks();
+}
+
+function toggleTask(menuId, taskId) {
+  const menu = state.menus.find(m => m.id === menuId);
+  const task = menu.tasks.find(t => t.id === taskId);
+  if (task) task.done = !task.done;
+  renderPrepTasks();
+}
+
+function deleteTask(menuId, taskId) {
+  const menu = state.menus.find(m => m.id === menuId);
+  menu.tasks = menu.tasks.filter(t => t.id !== taskId);
+  renderPrepTasks();
+}
+
+// ══════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════
+renderIngredients();
+</script>
+</body>
+</html>
