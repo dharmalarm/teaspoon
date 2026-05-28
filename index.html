@@ -52,7 +52,6 @@
   .btn-danger:hover { background: #FDE8E8; }
   .btn-sm { padding: 6px 12px; font-size: 0.78rem; }
 
-  /* Cards with separate expand vs action zones */
   .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 10px; overflow: hidden; transition: box-shadow 0.15s; }
   .card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
   .card-top { display: flex; align-items: center; padding: 14px 16px; gap: 10px; }
@@ -60,7 +59,7 @@
   .card-title { font-weight: 600; font-size: 0.95rem; }
   .card-sub { font-size: 0.78rem; color: var(--text-muted); margin-top: 2px; font-family: var(--mono); }
   .card-actions { display: flex; gap: 4px; flex-shrink: 0; align-items: center; }
-  .card-body { display: none; padding: 0 16px 14px; border-top: 1px solid var(--surface2); padding-top: 12px; }
+  .card-body { display: none; padding: 12px 16px 14px; border-top: 1px solid var(--surface2); }
   .card-body.open { display: block; }
   .caret { font-size: 0.7rem; color: var(--text-muted); transition: transform 0.2s; display: inline-block; cursor: pointer; padding: 6px; }
   .caret.open { transform: rotate(90deg); }
@@ -76,10 +75,8 @@
 
   .ing-row { display: flex; gap: 8px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--surface2); }
   .ing-row:last-child { border-bottom: none; }
-
   .section-label { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-muted); }
 
-  /* Estimates table */
   .est-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
   .est-table th { text-align: left; padding: 8px 10px; font-size: 0.68rem; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-muted); background: var(--surface2); border-bottom: 1px solid var(--border); }
   .est-table td { padding: 10px 10px; border-bottom: 1px solid var(--surface2); vertical-align: middle; }
@@ -88,7 +85,6 @@
   .est-table tfoot td { font-weight: 600; background: var(--surface2); border-top: 2px solid var(--border); }
   .qty-input { width: 65px; text-align: center; font-family: var(--mono); font-size: 0.88rem; padding: 5px 6px; }
   .cost-better { color: var(--accent2); font-weight: 600; }
-  .cost-tip { font-size: 0.7rem; color: var(--accent2); font-family: var(--sans); }
 
   .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 20px; }
   .summary-box { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px; text-align: center; }
@@ -98,13 +94,6 @@
   .menu-selector { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
   .menu-selector label { font-size: 0.78rem; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-muted); }
   .menu-selector select { max-width: 260px; flex: 1; }
-
-  .task-row { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--surface2); }
-  .task-row:last-child { border-bottom: none; }
-  .task-check { width: 20px; height: 20px; border: 2px solid var(--border); border-radius: 4px; cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.15s; font-size: 0.75rem; }
-  .task-check.done { background: var(--accent2); border-color: var(--accent2); color: white; }
-  .task-text { flex: 1; font-size: 0.88rem; }
-  .task-text.done { text-decoration: line-through; color: var(--text-muted); }
 
   .shop-item { display: flex; align-items: center; justify-content: space-between; padding: 11px 0; border-bottom: 1px solid var(--surface2); font-size: 0.88rem; }
   .shop-item:last-child { border-bottom: none; }
@@ -135,7 +124,6 @@
   <button class="nav-btn" onclick="showView('menus', this)">Menus</button>
   <button class="nav-btn" onclick="showView('estimates', this)">Estimates</button>
   <button class="nav-btn" onclick="showView('shopping', this)">Shopping List</button>
-  
 </nav>
 
 <main>
@@ -248,21 +236,9 @@
   </div>
 </div>
 
-  <div class="menu-selector">
-    <label>Menu</label>
-    <select id="prep-menu-select" onchange="renderPrepTasks()">
-      <option value="">— Select a menu —</option>
-    </select>
-  </div>
-  <div id="prepContent">
-    <div class="empty"><div class="empty-icon">✅</div><strong>Select a menu to manage prep tasks</strong></div>
-  </div>
-</div>
-
 </main>
 
 <script>
-// ── STATE ──────────────────────────────────────────────
 let state = {
   ingredients: [
     { id: 1, name: 'Bourbon', uom: 'ounce', size: 25, price: 20 },
@@ -293,14 +269,6 @@ let state = {
         { recipeId: 2, qty: 30 },
         { recipeId: 3, qty: 30 },
         { recipeId: 4, qty: 30 },
-      ],
-      tasks: [
-        { id: 1, text: 'Squeeze lemons and store in bottles', done: false },
-        { id: 2, text: 'Squeeze limes and store in bottles', done: false },
-        { id: 3, text: 'Make honey syrup (heat 12oz water + 12oz honey)', done: false },
-        { id: 4, text: 'Cut lemon peels at party', done: false },
-        { id: 5, text: 'Transfer booze into smaller bottles', done: false },
-        { id: 6, text: 'Fill cooler with ice for shaking', done: false },
       ]
     }
   ],
@@ -332,7 +300,7 @@ function populateMenuSelect(id) {
   if (cur) sel.value = cur;
 }
 
-// ── CARD COLLAPSE ─────────────────────────────────────
+// ── CARDS ─────────────────────────────────────────────
 function toggleCard(id) {
   const body = document.getElementById('card-body-' + id);
   const caret = document.getElementById('card-caret-' + id);
@@ -344,7 +312,6 @@ function toggleCard(id) {
 // ── HELPERS ───────────────────────────────────────────
 function costPerUom(ing) { return ing.price / ing.size; }
 
-// Ideal cost: pure ingredient math, no rounding to bottle boundaries
 function recipeIdealCost(recipe) {
   return recipe.ingredients.reduce((sum, ri) => {
     const ing = state.ingredients.find(i => i.id === ri.ingId);
@@ -352,18 +319,16 @@ function recipeIdealCost(recipe) {
   }, 0);
 }
 
-// Actual cost per unit at a given qty: accounts for full units opened across all ingredients
 function recipeActualCostPerUnit(recipe, qty) {
   if (!qty || qty <= 0) return 0;
-  let totalActual = 0;
+  let total = 0;
   recipe.ingredients.forEach(ri => {
     const ing = state.ingredients.find(i => i.id === ri.ingId);
     if (!ing) return;
-    const totalConsumed = ri.amount * qty;
-    const unitsOpened = Math.ceil(totalConsumed / ing.size);
-    totalActual += unitsOpened * ing.price;
+    const unitsOpened = Math.ceil((ri.amount * qty) / ing.size);
+    total += unitsOpened * ing.price;
   });
-  return totalActual / qty;
+  return total / qty;
 }
 
 function ingOptsHTML(selectedId) {
@@ -556,10 +521,10 @@ function saveMenu() {
   const name = document.getElementById('menu-name').value.trim();
   if (!name) { alert('Menu name is required.'); return; }
   const rows = document.querySelectorAll('#menuRecipeRows .ing-row');
-  const newRecipes = [];
+  const newRecipeIds = [];
   rows.forEach(row => {
     const recipeId = parseInt(row.querySelector('select').value);
-    if (recipeId) newRecipes.push(recipeId);
+    if (recipeId) newRecipeIds.push(recipeId);
   });
   const editId = parseInt(document.getElementById('menu-edit-id').value);
   if (editId) {
@@ -568,10 +533,10 @@ function saveMenu() {
       const existingQtys = {};
       menu.recipes.forEach(r => existingQtys[r.recipeId] = r.qty);
       menu.name = name;
-      menu.recipes = newRecipes.map(recipeId => ({ recipeId, qty: existingQtys[recipeId] || 10 }));
+      menu.recipes = newRecipeIds.map(recipeId => ({ recipeId, qty: existingQtys[recipeId] || 10 }));
     }
   } else {
-    state.menus.push({ id: state.nextMenuId++, name, recipes: newRecipes.map(recipeId => ({ recipeId, qty: 10 })), tasks: [] });
+    state.menus.push({ id: state.nextMenuId++, name, recipes: newRecipeIds.map(recipeId => ({ recipeId, qty: 10 })) });
   }
   closeMenuForm();
   renderMenus();
@@ -598,7 +563,7 @@ function renderMenus() {
       <div class="card-top">
         <div class="card-info" onclick="toggleCard('menu-${menu.id}')">
           <div class="card-title">${menu.name}</div>
-          <div class="card-sub">${menu.recipes.length} recipe${menu.recipes.length !== 1 ? 's' : ''} &nbsp;·&nbsp; ${menu.tasks.length} prep task${menu.tasks.length !== 1 ? 's' : ''}</div>
+          <div class="card-sub">${menu.recipes.length} recipe${menu.recipes.length !== 1 ? 's' : ''}</div>
         </div>
         <div class="card-actions">
           <button class="btn-ghost btn-sm" onclick="openMenuForm(JSON.parse(this.dataset.menu))" data-menu="${safeMenu}">Edit</button>
@@ -640,30 +605,33 @@ function updateQty(menuId, recipeId, val) {
   refreshEstimates(menu);
 }
 
+function setText(id, val, extraClass) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = val;
+  el.className = 'num' + (extraClass ? ' ' + extraClass : '');
+}
+
 function refreshEstimates(menu) {
   const ingUsage = calcIngUsage(menu);
   const totalIngCost = Object.values(ingUsage).reduce((s, u) => s + u.cost, 0);
   const totalUnitCost = Object.values(ingUsage).reduce((s, u) => s + u.unitsCost, 0);
   const totalUnits = menu.recipes.reduce((s, i) => s + i.qty, 0);
 
-  // Update summary boxes
   setText('summ-total-units', totalUnits);
   setText('summ-ing-cost', '$' + totalIngCost.toFixed(2));
   setText('summ-unit-cost', '$' + totalUnitCost.toFixed(2));
   setText('summ-avg', totalUnits ? '$' + (totalUnitCost / totalUnits).toFixed(2) : '—');
 
-  // Update per-recipe rows
   menu.recipes.forEach(item => {
     const rec = state.recipes.find(r => r.id === item.recipeId);
     if (!rec) return;
-    const actual = recipeActualCostPerUnit(rec, item.qty);
     const ideal = recipeIdealCost(rec);
-    const saving = actual < ideal;
-    setText(`est-actual-${item.recipeId}`, '$' + actual.toFixed(2), saving ? 'cost-better' : '');
+    const actual = recipeActualCostPerUnit(rec, item.qty);
+    setText(`est-actual-${item.recipeId}`, '$' + actual.toFixed(2), actual < ideal ? 'cost-better' : '');
     setText(`est-total-${item.recipeId}`, '$' + (actual * item.qty).toFixed(2));
   });
 
-  // Update ingredient breakdown
   const tbody = document.getElementById('ing-breakdown-body');
   const tfoot = document.getElementById('ing-breakdown-foot');
   if (tbody) {
@@ -676,19 +644,9 @@ function refreshEstimates(menu) {
         <td class="num">$${u.unitsCost.toFixed(2)}</td>
       </tr>`).join('');
   }
-  if (tfoot) {
-    tfoot.innerHTML = `<tr><td>Total</td><td></td><td></td><td class="num">$${totalIngCost.toFixed(2)}</td><td class="num">$${totalUnitCost.toFixed(2)}</td></tr>`;
-  }
-  // Recipe table footer
+  if (tfoot) tfoot.innerHTML = `<tr><td>Total</td><td></td><td></td><td class="num">$${totalIngCost.toFixed(2)}</td><td class="num">$${totalUnitCost.toFixed(2)}</td></tr>`;
   const recFoot = document.getElementById('rec-breakdown-foot');
   if (recFoot) recFoot.innerHTML = `<tr><td>Total</td><td></td><td></td><td></td><td class="num">$${totalUnitCost.toFixed(2)}</td></tr>`;
-}
-
-function setText(id, val, cls) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  el.textContent = val;
-  el.className = 'num' + (cls ? ' ' + cls : '');
 }
 
 function renderEstimates() {
@@ -711,12 +669,11 @@ function renderEstimates() {
     if (!rec) return '';
     const ideal = recipeIdealCost(rec);
     const actual = recipeActualCostPerUnit(rec, item.qty);
-    const saving = actual < ideal;
     return `<tr>
       <td>${rec.name}</td>
       <td class="num">$${ideal.toFixed(2)}</td>
       <td class="num"><input class="qty-input" type="number" min="0" value="${item.qty}" oninput="updateQty(${menu.id}, ${rec.id}, this.value)"></td>
-      <td class="num ${saving ? 'cost-better' : ''}" id="est-actual-${rec.id}">$${actual.toFixed(2)}</td>
+      <td class="num ${actual < ideal ? 'cost-better' : ''}" id="est-actual-${rec.id}">$${actual.toFixed(2)}</td>
       <td class="num" id="est-total-${rec.id}">$${(actual * item.qty).toFixed(2)}</td>
     </tr>`;
   }).join('');
@@ -738,7 +695,7 @@ function renderEstimates() {
       <div class="summary-box"><div class="val" id="summ-avg">${totalUnits ? '$' + (totalUnitCost / totalUnits).toFixed(2) : '—'}</div><div class="lbl">Actual Avg / Unit</div></div>
     </div>
     <div class="card" style="margin-bottom:16px">
-      <div style="padding:4px 0 12px"><span class="section-label">By Recipe</span> <span style="font-size:0.75rem;color:var(--text-muted);margin-left:8px">Edit qty — actual cost updates as you open more/fewer units</span></div>
+      <div style="padding:4px 0 12px"><span class="section-label">By Recipe</span> <span style="font-size:0.75rem;color:var(--text-muted);margin-left:8px">Edit qty — actual cost updates as you cross unit boundaries</span></div>
       <table class="est-table">
         <thead><tr><th>Recipe</th><th style="text-align:right">Ideal/Unit</th><th style="text-align:right">Qty</th><th style="text-align:right">Actual/Unit</th><th style="text-align:right">Total</th></tr></thead>
         <tbody>${recipeRows}</tbody>
