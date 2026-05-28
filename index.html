@@ -87,6 +87,10 @@
   .qty-input { width: 65px; text-align: center; font-family: var(--mono); font-size: 0.88rem; padding: 5px 6px; }
   .cost-better { color: var(--accent2); font-weight: 600; }
 
+  .sweet-spot { font-size: 0.75rem; margin-top: 4px; padding: 3px 8px; border-radius: 4px; display: inline-block; }
+  .sweet-spot.hint { background: #FFF4E0; color: #8B5C00; border: 1px solid #F0D080; }
+  .sweet-spot.optimal { background: var(--accent2-light); color: var(--accent2); border: 1px solid #A8D8A8; }
+
   .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 20px; }
   .summary-box { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px; text-align: center; }
   .summary-box .val { font-family: var(--serif); font-size: 1.5rem; color: var(--accent); }
@@ -758,6 +762,37 @@ function setText(id, val, extraClass) {
   el.className = 'num' + (extraClass ? ' ' + extraClass : '');
 }
 
+// ── SWEET SPOT ────────────────────────────────────────
+function sweetSpotHint(recipe, currentQty) {
+  if (!currentQty || currentQty <= 0) return '';
+  const currentCost = recipeActualCostPerUnit(recipe, currentQty);
+  if (currentCost === 0) return '';
+
+  const scanTo = currentQty * 3;
+  let bestQty = null;
+  let bestCost = currentCost;
+
+  for (let q = currentQty + 1; q <= scanTo; q++) {
+    const c = recipeActualCostPerUnit(recipe, q);
+    if (c < bestCost) { bestCost = c; bestQty = q; break; } // first improvement
+  }
+
+  // Check if current qty is already a local minimum within scan range
+  // (no improvement found, or improvement is below 10% threshold)
+  if (!bestQty || (currentCost - bestCost) / currentCost < 0.10) {
+    // Are we already at a sweet spot? Check if going one fewer costs more
+    if (currentQty === 1) return `<div class="sweet-spot optimal">✓ Good quantity</div>`;
+    const prevCost = recipeActualCostPerUnit(recipe, currentQty - 1);
+    if (prevCost > currentCost) {
+      return `<div class="sweet-spot optimal">✓ You're at a good quantity</div>`;
+    }
+    return '';
+  }
+
+  const saving = currentCost - bestCost;
+  return `<div class="sweet-spot hint">↓ Make ${bestQty} batches instead and save $${saving.toFixed(2)}/batch</div>`;
+}
+
 function refreshEstimates(menu) {
   const ingUsage = calcIngUsage(menu);
   const totalIngCost = Object.values(ingUsage).reduce((s, u) => s + u.cost, 0);
@@ -776,6 +811,8 @@ function refreshEstimates(menu) {
     const actual = recipeActualCostPerUnit(rec, item.qty);
     setText(`est-actual-${item.recipeId}`, '$' + actual.toFixed(2), actual < ideal ? 'cost-better' : '');
     setText(`est-total-${item.recipeId}`, '$' + (actual * item.qty).toFixed(2));
+    const hintEl = document.getElementById(`est-hint-${item.recipeId}`);
+    if (hintEl) hintEl.innerHTML = sweetSpotHint(rec, item.qty);
   });
 
   const tbody = document.getElementById('ing-breakdown-body');
@@ -815,8 +852,12 @@ function renderEstimates() {
     if (!rec) return '';
     const ideal = recipeIdealCost(rec);
     const actual = recipeActualCostPerUnit(rec, item.qty);
+    const hint = sweetSpotHint(rec, item.qty);
     return `<tr>
-      <td>${rec.name}</td>
+      <td>
+        <div>${rec.name}</div>
+        <div id="est-hint-${rec.id}">${hint}</div>
+      </td>
       <td class="num">$${ideal.toFixed(2)}</td>
       <td class="num"><input class="qty-input" type="number" min="0" value="${item.qty}" oninput="updateQty(${menu.id}, ${rec.id}, this.value)"></td>
       <td class="num ${actual < ideal ? 'cost-better' : ''}" id="est-actual-${rec.id}">$${actual.toFixed(2)}</td>
@@ -836,14 +877,14 @@ function renderEstimates() {
   el.innerHTML = `
     <div class="summary-grid">
       <div class="summary-box"><div class="val" id="summ-total-units">${totalUnits}</div><div class="lbl">Total Batches</div></div>
-      <div class="summary-box"><div class="val" id="summ-ing-cost">$${totalIngCost.toFixed(2)}</div><div class="lbl">Ideal Cost</div></div>
-      <div class="summary-box"><div class="val" id="summ-unit-cost">$${totalUnitCost.toFixed(2)}</div><div class="lbl">Actual Cost</div></div>
+      <div class="summary-box"><div class="val" id="summ-ing-cost">$${totalIngCost.toFixed(2)}</div><div class="lbl">Recipe Cost</div></div>
+      <div class="summary-box"><div class="val" id="summ-unit-cost">$${totalUnitCost.toFixed(2)}</div><div class="lbl">True Cost</div></div>
       <div class="summary-box"><div class="val" id="summ-avg">${totalUnits ? '$' + (totalUnitCost / totalUnits).toFixed(2) : '—'}</div><div class="lbl">Actual Avg / Batch</div></div>
     </div>
     <div class="card" style="margin-bottom:16px">
       <div style="padding:4px 0 12px"><span class="section-label">By Recipe</span> <span style="font-size:0.75rem;color:var(--text-muted);margin-left:8px">Edit batches — actual cost updates as you cross package boundaries</span></div>
       <table class="est-table">
-        <thead><tr><th>Recipe</th><th style="text-align:right">Ideal/Batch</th><th style="text-align:right">Batches</th><th style="text-align:right">Actual/Batch</th><th style="text-align:right">Total</th></tr></thead>
+        <thead><tr><th>Recipe</th><th style="text-align:right">Recipe Cost</th><th style="text-align:right">Batches</th><th style="text-align:right">True Cost/Batch</th><th style="text-align:right">Total</th></tr></thead>
         <tbody>${recipeRows}</tbody>
         <tfoot id="rec-breakdown-foot"><tr><td>Total</td><td></td><td></td><td></td><td class="num">$${totalUnitCost.toFixed(2)}</td></tr></tfoot>
       </table>
@@ -851,7 +892,7 @@ function renderEstimates() {
     <div class="card">
       <div style="padding:4px 0 12px"><span class="section-label">By Ingredient</span></div>
       <table class="est-table">
-        <thead><tr><th>Ingredient</th><th style="text-align:right">Consumed</th><th style="text-align:right">Pkgs Opened</th><th style="text-align:right">Ideal $</th><th style="text-align:right">Actual $</th></tr></thead>
+        <thead><tr><th>Ingredient</th><th style="text-align:right">Consumed</th><th style="text-align:right">Pkgs Opened</th><th style="text-align:right">Recipe $</th><th style="text-align:right">True $</th></tr></thead>
         <tbody id="ing-breakdown-body">${ingRows}</tbody>
         <tfoot id="ing-breakdown-foot"><tr><td>Total</td><td></td><td></td><td class="num">$${totalIngCost.toFixed(2)}</td><td class="num">$${totalUnitCost.toFixed(2)}</td></tr></tfoot>
       </table>
