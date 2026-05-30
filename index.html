@@ -53,6 +53,7 @@
   .btn-danger:hover { background: #FDE8E8; }
   .btn-sm { padding: 6px 12px; font-size: 0.78rem; }
 
+  /* Standard cards */
   .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 10px; overflow: hidden; transition: box-shadow 0.15s; }
   .card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
   .card-top { display: flex; align-items: center; padding: 14px 16px; gap: 10px; }
@@ -65,6 +66,49 @@
   .caret { font-size: 0.7rem; color: var(--text-muted); transition: transform 0.2s; display: inline-block; cursor: pointer; padding: 6px; }
   .caret.open { transform: rotate(90deg); }
 
+  /* ── MENU GRID ── */
+  .menu-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
+  @media (min-width: 640px) { .menu-grid { grid-template-columns: 1fr 1fr; } }
+
+  .menu-tile {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px;
+    cursor: pointer;
+    transition: box-shadow 0.15s, border-color 0.15s;
+  }
+  .menu-tile:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); border-color: #C8A898; }
+  .menu-tile-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 12px; }
+  .menu-tile-name { font-family: var(--serif); font-size: 1.15rem; color: var(--text); line-height: 1.2; }
+  .menu-tile-arrow { color: var(--text-muted); font-size: 1rem; margin-top: 2px; }
+  .menu-tile-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .menu-stat { background: var(--surface2); border-radius: 8px; padding: 10px 12px; }
+  .menu-stat-val { font-family: var(--serif); font-size: 1.15rem; color: var(--accent); }
+  .menu-stat-lbl { font-size: 0.68rem; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-muted); margin-top: 2px; }
+  .menu-tile-recipes { font-size: 0.75rem; color: var(--text-muted); margin-top: 10px; }
+
+  /* ── MENU DETAIL (full page) ── */
+  .detail-back { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+  .detail-title { font-family: var(--serif); font-size: 1.8rem; color: var(--text); }
+
+  .detail-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 20px; }
+  .detail-stat { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+  .detail-stat-val { font-family: var(--serif); font-size: 1.5rem; color: var(--accent); }
+  .detail-stat-lbl { font-size: 0.68rem; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-muted); margin-top: 2px; }
+
+  .detail-actions { display: flex; gap: 10px; margin-bottom: 24px; flex-wrap: wrap; }
+
+  /* Edit panel in detail view */
+  .detail-edit-panel { background: var(--accent-light); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 20px; display: none; }
+  .detail-edit-panel.open { display: block; }
+  .detail-edit-panel h3 { font-family: var(--serif); font-size: 1.1rem; color: var(--accent); margin-bottom: 14px; }
+
+  /* ── ESTIMATOR ── */
+  .estimator-back { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; }
+  .estimator-menu-name { font-family: var(--serif); font-size: 1.6rem; color: var(--text); }
+
+  /* Forms */
   .form-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 16px; }
   .form-panel h3 { font-family: var(--serif); font-size: 1.1rem; margin-bottom: 16px; color: var(--text); }
   .form-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
@@ -78,6 +122,7 @@
   .ing-row:last-child { border-bottom: none; }
   .section-label { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-muted); }
 
+  /* Estimates */
   .est-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
   .est-table th { text-align: left; padding: 8px 10px; font-size: 0.68rem; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-muted); background: var(--surface2); border-bottom: 1px solid var(--border); }
   .est-table td { padding: 10px 10px; border-bottom: 1px solid var(--surface2); vertical-align: middle; }
@@ -86,7 +131,6 @@
   .est-table tfoot td { font-weight: 600; background: var(--surface2); border-top: 2px solid var(--border); }
   .qty-input { width: 65px; text-align: center; font-family: var(--mono); font-size: 0.88rem; padding: 5px 6px; }
   .cost-better { color: var(--accent2); font-weight: 600; }
-
   .sweet-spot { font-size: 0.75rem; margin-top: 4px; padding: 3px 8px; border-radius: 4px; display: inline-block; }
   .sweet-spot.hint { background: #FFF4E0; color: #8B5C00; border: 1px solid #F0D080; }
   .sweet-spot.optimal { background: var(--accent2-light); color: var(--accent2); border: 1px solid #A8D8A8; }
@@ -96,10 +140,10 @@
   .summary-box .val { font-family: var(--serif); font-size: 1.5rem; color: var(--accent); }
   .summary-box .lbl { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-muted); margin-top: 4px; }
 
+  /* Shopping */
   .menu-selector { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
   .menu-selector label { font-size: 0.78rem; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-muted); }
   .menu-selector select { max-width: 260px; flex: 1; }
-
   .shop-item { display: flex; align-items: center; justify-content: space-between; padding: 11px 0; border-bottom: 1px solid var(--surface2); font-size: 0.88rem; }
   .shop-item:last-child { border-bottom: none; }
   .shop-qty { font-family: var(--mono); font-size: 0.82rem; color: var(--accent); font-weight: 500; white-space: nowrap; margin-left: 12px; }
@@ -113,7 +157,7 @@
   .storage-bar strong { color: var(--accent2); }
 
   @media (max-width: 500px) {
-    .view-title { font-size: 1.4rem; }
+    .view-title, .detail-title { font-size: 1.4rem; }
     .summary-box .val { font-size: 1.2rem; }
     .est-table th, .est-table td { padding: 7px 5px; font-size: 0.75rem; }
     .qty-input { width: 52px; }
@@ -138,7 +182,6 @@
   <button class="nav-btn active" onclick="showView('ingredients', this)">Ingredients</button>
   <button class="nav-btn" onclick="showView('recipes', this)">Recipes</button>
   <button class="nav-btn" onclick="showView('menus', this)">Menus</button>
-  <button class="nav-btn" onclick="showView('estimates', this)">Estimates</button>
   <button class="nav-btn" onclick="showView('shopping', this)">Shopping List</button>
 </nav>
 
@@ -158,7 +201,7 @@
       <div class="form-group" style="flex:2"><label>Unit of Measure</label><input id="ing-uom" type="text" placeholder="e.g. cup, tsp, oz"></div>
     </div>
     <div class="form-row">
-      <div class="form-group"><label>Unit Size (how many UoM per package)</label><input id="ing-size" type="number" placeholder="e.g. 18.9" min="0" step="any"></div>
+      <div class="form-group"><label>Package Size (in UoM)</label><input id="ing-size" type="number" placeholder="e.g. 18.9" min="0" step="any"></div>
       <div class="form-group"><label>Package Price ($)</label><input id="ing-price" type="number" placeholder="e.g. 1.97" min="0" step="0.01"></div>
     </div>
     <div style="display:flex;gap:8px;margin-top:4px">
@@ -200,42 +243,79 @@
 
 <!-- MENUS -->
 <div id="view-menus" class="view">
-  <div class="view-header">
-    <div class="view-title">Menus</div>
-    <button class="btn btn-primary" onclick="openMenuForm()">+ New Menu</button>
-  </div>
-  <div class="form-panel" id="menuForm" style="display:none">
-    <h3 id="menuFormTitle">New Menu</h3>
-    <input type="hidden" id="menu-edit-id">
-    <div class="form-row">
-      <div class="form-group" style="flex:3"><label>Menu Name</label><input id="menu-name" type="text" placeholder="e.g. Saturday Farmers Market"></div>
-    </div>
-    <div class="divider"></div>
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-      <div class="section-label">Recipes</div>
-      <button class="btn btn-secondary btn-sm" onclick="addMenuRecipeRow()">+ Add Recipe</button>
-    </div>
-    <div id="menuRecipeRows"></div>
-    <div style="display:flex;gap:8px;margin-top:16px">
-      <button class="btn btn-primary" onclick="saveMenu()">Save Menu</button>
-      <button class="btn btn-secondary" onclick="closeMenuForm()">Cancel</button>
-    </div>
-  </div>
-  <div id="menuList"></div>
-</div>
 
-<!-- ESTIMATES -->
-<div id="view-estimates" class="view">
-  <div class="view-header"><div class="view-title">Estimates</div></div>
-  <div class="menu-selector">
-    <label>Menu</label>
-    <select id="est-menu-select" onchange="renderEstimates()">
-      <option value="">— Select a menu —</option>
-    </select>
+  <!-- SCREEN 1: GRID -->
+  <div id="screen-grid">
+    <div class="view-header">
+      <div class="view-title">Menus</div>
+      <button class="btn btn-primary" onclick="showNewMenuForm()">+ New Menu</button>
+    </div>
+    <div class="form-panel" id="newMenuForm" style="display:none">
+      <h3>New Menu</h3>
+      <div class="form-row">
+        <div class="form-group" style="flex:3"><label>Menu Name</label><input id="new-menu-name" type="text" placeholder="e.g. Saturday Farmers Market"></div>
+      </div>
+      <div class="divider"></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div class="section-label">Recipes</div>
+        <button class="btn btn-secondary btn-sm" onclick="addNewMenuRecipeRow()">+ Add Recipe</button>
+      </div>
+      <div id="newMenuRecipeRows"></div>
+      <div style="display:flex;gap:8px;margin-top:16px">
+        <button class="btn btn-primary" onclick="saveNewMenu()">Save Menu</button>
+        <button class="btn btn-secondary" onclick="hideNewMenuForm()">Cancel</button>
+      </div>
+    </div>
+    <div id="menuGrid"></div>
   </div>
-  <div id="estimatesContent">
-    <div class="empty"><div class="empty-icon">📊</div><strong>Select a menu to see estimates</strong><p>Cost breakdowns will appear here.</p></div>
+
+  <!-- SCREEN 2: MENU DETAIL -->
+  <div id="screen-detail" style="display:none">
+    <div class="detail-back">
+      <button class="btn btn-secondary btn-sm" onclick="showGrid()">← Menus</button>
+      <div class="detail-title" id="detail-title"></div>
+    </div>
+    <!-- Stats -->
+    <div class="detail-stats" id="detail-stats"></div>
+    <!-- Actions -->
+    <div class="detail-actions">
+      <button class="btn btn-primary" onclick="openEstimator()">Open Estimator</button>
+      <button class="btn btn-secondary" onclick="toggleDetailEdit()">Edit Menu</button>
+      <button class="btn-danger" onclick="deleteCurrentMenu()">Delete</button>
+    </div>
+    <!-- Edit form -->
+    <div class="detail-edit-panel" id="detail-edit-panel">
+      <h3>Edit Menu</h3>
+      <div class="form-row">
+        <div class="form-group" style="flex:3"><label>Menu Name</label><input id="detail-menu-name" type="text"></div>
+      </div>
+      <div class="divider"></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div class="section-label">Recipes</div>
+        <button class="btn btn-secondary btn-sm" onclick="addDetailMenuRecipeRow()">+ Add Recipe</button>
+      </div>
+      <div id="detail-menu-recipe-rows"></div>
+      <div style="display:flex;gap:8px;margin-top:16px">
+        <button class="btn btn-primary" onclick="saveDetailMenuEdit()">Save</button>
+        <button class="btn btn-secondary" onclick="toggleDetailEdit()">Cancel</button>
+      </div>
+    </div>
+    <!-- Recipe list -->
+    <div class="card">
+      <div style="padding:4px 0 12px"><span class="section-label">Recipes in this menu</span></div>
+      <div id="detail-recipe-list"></div>
+    </div>
   </div>
+
+  <!-- SCREEN 3: ESTIMATOR -->
+  <div id="screen-estimator" style="display:none">
+    <div class="estimator-back">
+      <button class="btn btn-secondary btn-sm" onclick="closeEstimator()">← Menu</button>
+      <div class="estimator-menu-name" id="estimator-title"></div>
+    </div>
+    <div id="estimatorContent"></div>
+  </div>
+
 </div>
 
 <!-- SHOPPING LIST -->
@@ -255,167 +335,84 @@
 </main>
 
 <script>
-// ── DEFAULT DATA ───────────────────────────────────────
 const DEFAULT_STATE = {
   ingredients: [
-    // Flours — 5 lb bag = ~18.9 cups
     { id: 1,  name: 'All-Purpose Flour',    uom: 'cup',  size: 18.9, price: 1.97 },
     { id: 2,  name: 'Bread Flour',          uom: 'cup',  size: 18.9, price: 2.48 },
     { id: 3,  name: 'Whole Wheat Flour',    uom: 'cup',  size: 18.9, price: 2.98 },
     { id: 4,  name: 'Cake Flour',           uom: 'cup',  size: 18.9, price: 3.48 },
-    // Sugars
-    { id: 5,  name: 'Granulated Sugar',     uom: 'cup',  size: 8.5,  price: 2.97 },  // 4 lb = ~8.5 cups
-    { id: 6,  name: 'Brown Sugar (Light)',  uom: 'cup',  size: 3.5,  price: 1.94 },  // 32 oz = ~3.5 cups packed
+    { id: 5,  name: 'Granulated Sugar',     uom: 'cup',  size: 8.5,  price: 2.97 },
+    { id: 6,  name: 'Brown Sugar (Light)',  uom: 'cup',  size: 3.5,  price: 1.94 },
     { id: 7,  name: 'Brown Sugar (Dark)',   uom: 'cup',  size: 3.5,  price: 1.94 },
-    { id: 8,  name: 'Powdered Sugar',       uom: 'cup',  size: 7,    price: 1.97 },  // 32 oz = ~7 cups
-    { id: 9,  name: 'Honey',               uom: 'tbsp', size: 24,   price: 4.98 },  // 12 oz jar
-    // Fats
-    { id: 10, name: 'Unsalted Butter',      uom: 'tbsp', size: 32,   price: 5.98 },  // 1 lb = 32 tbsp
+    { id: 8,  name: 'Powdered Sugar',       uom: 'cup',  size: 7,    price: 1.97 },
+    { id: 9,  name: 'Honey',               uom: 'tbsp', size: 24,   price: 4.98 },
+    { id: 10, name: 'Unsalted Butter',      uom: 'tbsp', size: 32,   price: 5.98 },
     { id: 11, name: 'Salted Butter',        uom: 'tbsp', size: 32,   price: 5.98 },
-    { id: 12, name: 'Vegetable Oil',        uom: 'cup',  size: 6,    price: 3.57 },  // 48 fl oz = 6 cups
-    { id: 13, name: 'Coconut Oil',          uom: 'tbsp', size: 28,   price: 5.48 },  // 14 oz jar
+    { id: 12, name: 'Vegetable Oil',        uom: 'cup',  size: 6,    price: 3.57 },
+    { id: 13, name: 'Coconut Oil',          uom: 'tbsp', size: 28,   price: 5.48 },
     { id: 14, name: 'Shortening',           uom: 'cup',  size: 6,    price: 3.98 },
-    // Dairy
-    { id: 15, name: 'Whole Milk',           uom: 'cup',  size: 16,   price: 4.28 },  // gallon = 16 cups
-    { id: 16, name: 'Buttermilk',           uom: 'cup',  size: 4,    price: 2.48 },  // quart
-    { id: 17, name: 'Heavy Cream',          uom: 'cup',  size: 2,    price: 3.98 },  // pint
-    { id: 18, name: 'Sour Cream',           uom: 'cup',  size: 2,    price: 2.48 },  // 16 oz
-    { id: 19, name: 'Cream Cheese',         uom: 'oz',   size: 8,    price: 2.98 },  // 8 oz block
-    // Eggs
-    { id: 20, name: 'Large Eggs',           uom: 'egg',  size: 12,   price: 4.98 },  // dozen
-    // Leaveners & Salt
-    { id: 21, name: 'Baking Powder',        uom: 'tsp',  size: 55,   price: 1.98 },  // ~8.1 oz = ~55 tsp
-    { id: 22, name: 'Baking Soda',          uom: 'tsp',  size: 96,   price: 0.92 },  // 1 lb = ~96 tsp
-    { id: 23, name: 'Active Dry Yeast',     uom: 'tsp',  size: 21,   price: 2.98 },  // 3-packet strip = ~21 tsp
+    { id: 15, name: 'Whole Milk',           uom: 'cup',  size: 16,   price: 4.28 },
+    { id: 16, name: 'Buttermilk',           uom: 'cup',  size: 4,    price: 2.48 },
+    { id: 17, name: 'Heavy Cream',          uom: 'cup',  size: 2,    price: 3.98 },
+    { id: 18, name: 'Sour Cream',           uom: 'cup',  size: 2,    price: 2.48 },
+    { id: 19, name: 'Cream Cheese',         uom: 'oz',   size: 8,    price: 2.98 },
+    { id: 20, name: 'Large Eggs',           uom: 'egg',  size: 12,   price: 4.98 },
+    { id: 21, name: 'Baking Powder',        uom: 'tsp',  size: 55,   price: 1.98 },
+    { id: 22, name: 'Baking Soda',          uom: 'tsp',  size: 96,   price: 0.92 },
+    { id: 23, name: 'Active Dry Yeast',     uom: 'tsp',  size: 21,   price: 2.98 },
     { id: 24, name: 'Instant Yeast',        uom: 'tsp',  size: 21,   price: 2.98 },
-    { id: 25, name: 'Salt',                 uom: 'tsp',  size: 400,  price: 1.28 },  // 26 oz = ~400 tsp
-    // Extracts & Flavorings
-    { id: 26, name: 'Vanilla Extract',      uom: 'tsp',  size: 12,   price: 4.98 },  // 2 fl oz = ~12 tsp
+    { id: 25, name: 'Salt',                 uom: 'tsp',  size: 400,  price: 1.28 },
+    { id: 26, name: 'Vanilla Extract',      uom: 'tsp',  size: 12,   price: 4.98 },
     { id: 27, name: 'Almond Extract',       uom: 'tsp',  size: 12,   price: 3.98 },
-    { id: 28, name: 'Lemon Zest',           uom: 'tsp',  size: 4,    price: 0.59 },  // per lemon
-    // Chocolate
-    { id: 29, name: 'Semi-Sweet Choc Chips',uom: 'cup',  size: 2,    price: 3.58 },  // 12 oz = ~2 cups
-    { id: 30, name: 'Cocoa Powder',         uom: 'cup',  size: 3,    price: 2.98 },  // 8 oz = ~3 cups
+    { id: 28, name: 'Lemon Zest',           uom: 'tsp',  size: 4,    price: 0.59 },
+    { id: 29, name: 'Semi-Sweet Choc Chips',uom: 'cup',  size: 2,    price: 3.58 },
+    { id: 30, name: 'Cocoa Powder',         uom: 'cup',  size: 3,    price: 2.98 },
     { id: 31, name: 'Dark Chocolate Chips', uom: 'cup',  size: 2,    price: 3.98 },
-    // Spices
-    { id: 32, name: 'Cinnamon',             uom: 'tsp',  size: 60,   price: 2.48 },  // ~2 oz jar
+    { id: 32, name: 'Cinnamon',             uom: 'tsp',  size: 60,   price: 2.48 },
     { id: 33, name: 'Nutmeg',               uom: 'tsp',  size: 30,   price: 2.48 },
     { id: 34, name: 'Ginger (ground)',      uom: 'tsp',  size: 30,   price: 2.48 },
     { id: 35, name: 'Cloves (ground)',      uom: 'tsp',  size: 30,   price: 2.48 },
-    // Other
-    { id: 36, name: 'Rolled Oats',          uom: 'cup',  size: 13,   price: 3.98 },  // 42 oz = ~13 cups
+    { id: 36, name: 'Rolled Oats',          uom: 'cup',  size: 13,   price: 3.98 },
     { id: 37, name: 'Cream of Tartar',      uom: 'tsp',  size: 45,   price: 2.48 },
-    { id: 38, name: 'Cornstarch',           uom: 'tbsp', size: 55,   price: 1.98 },  // 16 oz = ~55 tbsp
-    { id: 39, name: 'Raisins',              uom: 'cup',  size: 4,    price: 2.98 },  // 12 oz = ~2 cups (use 4 for flexibility)
+    { id: 38, name: 'Cornstarch',           uom: 'tbsp', size: 55,   price: 1.98 },
+    { id: 39, name: 'Raisins',              uom: 'cup',  size: 4,    price: 2.98 },
     { id: 40, name: 'Walnuts (chopped)',    uom: 'cup',  size: 2,    price: 3.98 },
   ],
   recipes: [
-    {
-      id: 1, name: 'Chocolate Chip Cookies', desc: 'Classic batch — yields ~36 cookies',
-      ingredients: [
-        { ingId: 1,  amount: 2.25 },  // AP flour
-        { ingId: 22, amount: 1 },     // baking soda
-        { ingId: 25, amount: 1 },     // salt
-        { ingId: 10, amount: 16 },    // butter (2 sticks = 16 tbsp)
-        { ingId: 5,  amount: 0.75 },  // granulated sugar
-        { ingId: 6,  amount: 0.75 },  // brown sugar
-        { ingId: 20, amount: 2 },     // eggs
-        { ingId: 26, amount: 2 },     // vanilla
-        { ingId: 29, amount: 2 },     // choc chips
-      ]
-    },
-    {
-      id: 2, name: 'Banana Bread', desc: 'One 9x5 loaf — 10 slices',
-      ingredients: [
-        { ingId: 1,  amount: 1.5 },   // AP flour
-        { ingId: 22, amount: 1 },     // baking soda
-        { ingId: 25, amount: 0.5 },   // salt
-        { ingId: 10, amount: 8 },     // butter (1 stick)
-        { ingId: 5,  amount: 0.75 },  // sugar
-        { ingId: 20, amount: 2 },     // eggs
-        { ingId: 26, amount: 1 },     // vanilla
-        { ingId: 15, amount: 0.25 },  // milk
-      ]
-    },
-    {
-      id: 3, name: 'Classic Brownies', desc: 'One 9x13 pan — 24 bars',
-      ingredients: [
-        { ingId: 10, amount: 16 },    // butter
-        { ingId: 5,  amount: 2 },     // sugar
-        { ingId: 20, amount: 4 },     // eggs
-        { ingId: 26, amount: 2 },     // vanilla
-        { ingId: 30, amount: 1 },     // cocoa powder
-        { ingId: 1,  amount: 1 },     // flour
-        { ingId: 25, amount: 0.5 },   // salt
-        { ingId: 21, amount: 0.5 },   // baking powder
-      ]
-    },
-    {
-      id: 4, name: 'Oatmeal Raisin Cookies', desc: 'Classic batch — yields ~48 cookies',
-      ingredients: [
-        { ingId: 10, amount: 16 },    // butter
-        { ingId: 5,  amount: 0.75 },  // sugar
-        { ingId: 6,  amount: 0.75 },  // brown sugar
-        { ingId: 20, amount: 2 },     // eggs
-        { ingId: 26, amount: 1 },     // vanilla
-        { ingId: 1,  amount: 1.5 },   // flour
-        { ingId: 22, amount: 1 },     // baking soda
-        { ingId: 32, amount: 1 },     // cinnamon
-        { ingId: 25, amount: 1 },     // salt
-        { ingId: 36, amount: 3 },     // oats
-        { ingId: 39, amount: 1 },     // raisins
-      ]
-    },
-    {
-      id: 5, name: 'Cream Cheese Frosting', desc: 'Frosts one 9-inch layer cake',
-      ingredients: [
-        { ingId: 19, amount: 8 },     // cream cheese
-        { ingId: 10, amount: 8 },     // butter
-        { ingId: 8,  amount: 4 },     // powdered sugar
-        { ingId: 26, amount: 1 },     // vanilla
-      ]
-    },
+    { id: 1, name: 'Chocolate Chip Cookies', desc: 'Classic batch — yields ~36 cookies',
+      ingredients: [{ ingId: 1, amount: 2.25 },{ ingId: 22, amount: 1 },{ ingId: 25, amount: 1 },{ ingId: 10, amount: 16 },{ ingId: 5, amount: 0.75 },{ ingId: 6, amount: 0.75 },{ ingId: 20, amount: 2 },{ ingId: 26, amount: 2 },{ ingId: 29, amount: 2 }] },
+    { id: 2, name: 'Banana Bread', desc: 'One 9x5 loaf — 10 slices',
+      ingredients: [{ ingId: 1, amount: 1.5 },{ ingId: 22, amount: 1 },{ ingId: 25, amount: 0.5 },{ ingId: 10, amount: 8 },{ ingId: 5, amount: 0.75 },{ ingId: 20, amount: 2 },{ ingId: 26, amount: 1 },{ ingId: 15, amount: 0.25 }] },
+    { id: 3, name: 'Classic Brownies', desc: 'One 9x13 pan — 24 bars',
+      ingredients: [{ ingId: 10, amount: 16 },{ ingId: 5, amount: 2 },{ ingId: 20, amount: 4 },{ ingId: 26, amount: 2 },{ ingId: 30, amount: 1 },{ ingId: 1, amount: 1 },{ ingId: 25, amount: 0.5 },{ ingId: 21, amount: 0.5 }] },
+    { id: 4, name: 'Oatmeal Raisin Cookies', desc: 'Classic batch — yields ~48 cookies',
+      ingredients: [{ ingId: 10, amount: 16 },{ ingId: 5, amount: 0.75 },{ ingId: 6, amount: 0.75 },{ ingId: 20, amount: 2 },{ ingId: 26, amount: 1 },{ ingId: 1, amount: 1.5 },{ ingId: 22, amount: 1 },{ ingId: 32, amount: 1 },{ ingId: 25, amount: 1 },{ ingId: 36, amount: 3 },{ ingId: 39, amount: 1 }] },
+    { id: 5, name: 'Cream Cheese Frosting', desc: 'Frosts one 9-inch layer cake',
+      ingredients: [{ ingId: 19, amount: 8 },{ ingId: 10, amount: 8 },{ ingId: 8, amount: 4 },{ ingId: 26, amount: 1 }] },
   ],
   menus: [
-    {
-      id: 1, name: 'Saturday Farmers Market',
-      recipes: [
-        { recipeId: 1, qty: 4 },   // 4 batches of cookies = ~144
-        { recipeId: 2, qty: 6 },   // 6 loaves banana bread
-        { recipeId: 3, qty: 2 },   // 2 pans brownies
-        { recipeId: 4, qty: 3 },   // 3 batches oatmeal raisin
-      ]
-    }
+    { id: 1, name: 'Saturday Farmers Market',
+      recipes: [{ recipeId: 1, qty: 4 },{ recipeId: 2, qty: 6 },{ recipeId: 3, qty: 2 },{ recipeId: 4, qty: 3 }] }
   ],
   nextIngId: 41, nextRecId: 6, nextMenuId: 2,
 };
 
-// ── LOCALSTORAGE ───────────────────────────────────────
 const STORAGE_KEY = 'materialize_bakeshop_v1';
-
 function loadState() {
-  try {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) return JSON.parse(saved);
-  } catch(e) {}
+  try { const s = localStorage.getItem(STORAGE_KEY); if (s) return JSON.parse(s); } catch(e) {}
   return JSON.parse(JSON.stringify(DEFAULT_STATE));
 }
-
-function saveState() {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  } catch(e) {}
-}
-
+function saveState() { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {} }
 function clearAllData() {
-  if (!confirm('Reset everything to default baking ingredients and sample recipes? Your custom data will be lost.')) return;
+  if (!confirm('Reset everything to defaults? Your custom data will be lost.')) return;
   localStorage.removeItem(STORAGE_KEY);
   state = JSON.parse(JSON.stringify(DEFAULT_STATE));
-  saveState();
-  renderIngredients();
+  saveState(); renderIngredients();
 }
-
 let state = loadState();
+
+// Current menu being viewed
+let currentMenuId = null;
 
 // ── NAV ───────────────────────────────────────────────
 function showView(name, btn) {
@@ -425,24 +422,45 @@ function showView(name, btn) {
   if (btn) btn.classList.add('active');
   if (name === 'ingredients') renderIngredients();
   if (name === 'recipes') renderRecipes();
-  if (name === 'menus') renderMenus();
-  if (name === 'estimates') { populateMenuSelect('est-menu-select'); renderEstimates(); }
-  if (name === 'shopping') { populateMenuSelect('shop-menu-select'); renderShoppingList(); }
+  if (name === 'menus') showGrid();
+  if (name === 'shopping') { populateShoppingSelect(); renderShoppingList(); }
 }
 
-function populateMenuSelect(id) {
-  const sel = document.getElementById(id);
-  const cur = sel.value;
-  sel.innerHTML = '<option value="">— Select a menu —</option>';
-  state.menus.forEach(m => {
-    const opt = document.createElement('option');
-    opt.value = m.id; opt.textContent = m.name;
-    sel.appendChild(opt);
-  });
-  if (cur) sel.value = cur;
+// ── MENU SCREENS ──────────────────────────────────────
+function showGrid() {
+  currentMenuId = null;
+  document.getElementById('screen-grid').style.display = 'block';
+  document.getElementById('screen-detail').style.display = 'none';
+  document.getElementById('screen-estimator').style.display = 'none';
+  renderMenuGrid();
 }
 
-// ── CARDS ─────────────────────────────────────────────
+function showDetail(menuId) {
+  currentMenuId = menuId;
+  document.getElementById('screen-grid').style.display = 'none';
+  document.getElementById('screen-detail').style.display = 'block';
+  document.getElementById('screen-estimator').style.display = 'none';
+  document.getElementById('detail-edit-panel').classList.remove('open');
+  renderDetail();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function openEstimator() {
+  const menu = state.menus.find(m => m.id === currentMenuId);
+  if (!menu) return;
+  document.getElementById('screen-grid').style.display = 'none';
+  document.getElementById('screen-detail').style.display = 'none';
+  document.getElementById('screen-estimator').style.display = 'block';
+  document.getElementById('estimator-title').textContent = menu.name;
+  renderEstimator(menu);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function closeEstimator() {
+  showDetail(currentMenuId);
+}
+
+// ── CARD COLLAPSE ─────────────────────────────────────
 function toggleCard(id) {
   const body = document.getElementById('card-body-' + id);
   const caret = document.getElementById('card-caret-' + id);
@@ -453,26 +471,66 @@ function toggleCard(id) {
 
 // ── HELPERS ───────────────────────────────────────────
 function costPerUom(ing) { return ing.price / ing.size; }
-
 function recipeIdealCost(recipe) {
   return recipe.ingredients.reduce((sum, ri) => {
     const ing = state.ingredients.find(i => i.id === ri.ingId);
     return sum + (ing ? costPerUom(ing) * ri.amount : 0);
   }, 0);
 }
-
 function recipeActualCostPerUnit(recipe, qty) {
   if (!qty || qty <= 0) return 0;
   let total = 0;
   recipe.ingredients.forEach(ri => {
     const ing = state.ingredients.find(i => i.id === ri.ingId);
     if (!ing) return;
-    const unitsOpened = Math.ceil((ri.amount * qty) / ing.size);
-    total += unitsOpened * ing.price;
+    total += Math.ceil((ri.amount * qty) / ing.size) * ing.price;
   });
   return total / qty;
 }
-
+function menuTrueCost(menu) {
+  return menu.recipes.reduce((sum, item) => {
+    const rec = state.recipes.find(r => r.id === item.recipeId);
+    return sum + (rec ? recipeActualCostPerUnit(rec, item.qty) * item.qty : 0);
+  }, 0);
+}
+function menuTotalBatches(menu) { return menu.recipes.reduce((s, i) => s + i.qty, 0); }
+function calcIngUsage(menu) {
+  const ingUsage = {};
+  menu.recipes.forEach(item => {
+    const rec = state.recipes.find(r => r.id === item.recipeId);
+    if (!rec) return;
+    rec.ingredients.forEach(ri => {
+      const ing = state.ingredients.find(i => i.id === ri.ingId);
+      if (!ing) return;
+      if (!ingUsage[ri.ingId]) ingUsage[ri.ingId] = { ing, consumed: 0, cost: 0 };
+      ingUsage[ri.ingId].consumed += ri.amount * item.qty;
+      ingUsage[ri.ingId].cost += costPerUom(ing) * ri.amount * item.qty;
+    });
+  });
+  Object.values(ingUsage).forEach(u => {
+    u.unitsOpened = Math.ceil(u.consumed / u.ing.size);
+    u.unitsCost = u.unitsOpened * u.ing.price;
+  });
+  return ingUsage;
+}
+function sweetSpotHint(recipe, currentQty) {
+  if (!currentQty || currentQty <= 0) return '';
+  const currentCost = recipeActualCostPerUnit(recipe, currentQty);
+  if (currentCost === 0) return '';
+  const scanTo = currentQty * 3;
+  let bestQty = null, bestCost = currentCost;
+  for (let q = currentQty + 1; q <= scanTo; q++) {
+    const c = recipeActualCostPerUnit(recipe, q);
+    if (c < bestCost) { bestCost = c; bestQty = q; break; }
+  }
+  if (!bestQty || (currentCost - bestCost) / currentCost < 0.10) {
+    if (currentQty === 1) return `<div class="sweet-spot optimal">\u2713 Good quantity</div>`;
+    const prevCost = recipeActualCostPerUnit(recipe, currentQty - 1);
+    if (prevCost > currentCost) return `<div class="sweet-spot optimal">\u2713 You're at a good quantity</div>`;
+    return '';
+  }
+  return `<div class="sweet-spot hint">\u2193 Make ${bestQty} batches instead and save $${(currentCost - bestCost).toFixed(2)}/batch</div>`;
+}
 function ingOptsHTML(selectedId) {
   return state.ingredients.map(i =>
     `<option value="${i.id}" ${i.id === selectedId ? 'selected' : ''}>${i.name} (${i.uom})</option>`
@@ -497,7 +555,6 @@ function openIngForm(ing) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 function closeIngForm() { document.getElementById('ingForm').style.display = 'none'; }
-
 function saveIngredient() {
   const name = document.getElementById('ing-name').value.trim();
   const uom = document.getElementById('ing-uom').value.trim();
@@ -511,23 +568,17 @@ function saveIngredient() {
   } else {
     state.ingredients.push({ id: state.nextIngId++, name, uom, size, price });
   }
-  saveState();
-  closeIngForm();
-  renderIngredients();
+  saveState(); closeIngForm(); renderIngredients();
 }
-
 function deleteIngredient(id) {
   if (!confirm('Delete this ingredient?')) return;
   state.ingredients = state.ingredients.filter(i => i.id !== id);
-  saveState();
-  renderIngredients();
+  saveState(); renderIngredients();
 }
-
 function renderIngredients() {
   const el = document.getElementById('ingList');
   if (!state.ingredients.length) {
-    el.innerHTML = `<div class="empty"><div class="empty-icon">🧁</div><strong>No ingredients yet</strong><p>Add your first ingredient above.</p></div>`;
-    return;
+    el.innerHTML = `<div class="empty"><div class="empty-icon">🧁</div><strong>No ingredients yet</strong></div>`; return;
   }
   el.innerHTML = state.ingredients.map(ing => `
     <div class="card">
@@ -552,15 +603,13 @@ function openRecipeForm(rec) {
   document.getElementById('rec-desc').value = rec ? (rec.desc || '') : '';
   const container = document.getElementById('recIngRows');
   container.innerHTML = '';
-  if (rec && rec.ingredients.length) {
-    rec.ingredients.forEach(ri => addIngRow(ri.ingId, ri.amount));
-  } else { addIngRow(); }
+  if (rec && rec.ingredients.length) { rec.ingredients.forEach(ri => addIngRow(ri.ingId, ri.amount)); }
+  else { addIngRow(); }
   document.getElementById('recipeForm').style.display = 'block';
   document.getElementById('rec-name').focus();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 function closeRecipeForm() { document.getElementById('recipeForm').style.display = 'none'; }
-
 function addIngRow(selectedIngId, amount) {
   const container = document.getElementById('recIngRows');
   const row = document.createElement('div');
@@ -571,7 +620,6 @@ function addIngRow(selectedIngId, amount) {
     <button class="btn-danger" style="padding:4px 8px;flex-shrink:0" onclick="this.parentElement.remove()">✕</button>`;
   container.appendChild(row);
 }
-
 function saveRecipe() {
   const name = document.getElementById('rec-name').value.trim();
   const desc = document.getElementById('rec-desc').value.trim();
@@ -590,23 +638,17 @@ function saveRecipe() {
   } else {
     state.recipes.push({ id: state.nextRecId++, name, desc, ingredients });
   }
-  saveState();
-  closeRecipeForm();
-  renderRecipes();
+  saveState(); closeRecipeForm(); renderRecipes();
 }
-
 function deleteRecipe(id) {
   if (!confirm('Delete this recipe?')) return;
   state.recipes = state.recipes.filter(r => r.id !== id);
-  saveState();
-  renderRecipes();
+  saveState(); renderRecipes();
 }
-
 function renderRecipes() {
   const el = document.getElementById('recipeList');
   if (!state.recipes.length) {
-    el.innerHTML = `<div class="empty"><div class="empty-icon">📋</div><strong>No recipes yet</strong></div>`;
-    return;
+    el.innerHTML = `<div class="empty"><div class="empty-icon">📋</div><strong>No recipes yet</strong></div>`; return;
   }
   el.innerHTML = state.recipes.map(rec => {
     const cost = recipeIdealCost(rec);
@@ -636,24 +678,125 @@ function renderRecipes() {
   }).join('');
 }
 
-// ── MENUS ─────────────────────────────────────────────
-function openMenuForm(menu) {
-  document.getElementById('menuFormTitle').textContent = menu ? 'Edit Menu' : 'New Menu';
-  document.getElementById('menu-edit-id').value = menu ? menu.id : '';
-  document.getElementById('menu-name').value = menu ? menu.name : '';
-  const container = document.getElementById('menuRecipeRows');
-  container.innerHTML = '';
-  if (menu && menu.recipes.length) {
-    menu.recipes.forEach(item => addMenuRecipeRow(item.recipeId));
-  } else { addMenuRecipeRow(); }
-  document.getElementById('menuForm').style.display = 'block';
-  document.getElementById('menu-name').focus();
+// ── MENU GRID ─────────────────────────────────────────
+function showNewMenuForm() {
+  document.getElementById('newMenuForm').style.display = 'block';
+  document.getElementById('new-menu-name').value = '';
+  document.getElementById('newMenuRecipeRows').innerHTML = '';
+  addNewMenuRecipeRow();
+  document.getElementById('new-menu-name').focus();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
-function closeMenuForm() { document.getElementById('menuForm').style.display = 'none'; }
+function hideNewMenuForm() { document.getElementById('newMenuForm').style.display = 'none'; }
+function addNewMenuRecipeRow() {
+  const container = document.getElementById('newMenuRecipeRows');
+  const row = document.createElement('div');
+  row.className = 'ing-row';
+  row.innerHTML = `
+    <select style="flex:3">${recipeOptsHTML()}</select>
+    <button class="btn-danger" style="padding:4px 8px;flex-shrink:0" onclick="this.parentElement.remove()">✕</button>`;
+  container.appendChild(row);
+}
+function saveNewMenu() {
+  const name = document.getElementById('new-menu-name').value.trim();
+  if (!name) { alert('Menu name is required.'); return; }
+  const rows = document.querySelectorAll('#newMenuRecipeRows .ing-row');
+  const recipeIds = [];
+  rows.forEach(row => {
+    const recipeId = parseInt(row.querySelector('select').value);
+    if (recipeId) recipeIds.push(recipeId);
+  });
+  state.menus.push({ id: state.nextMenuId++, name, recipes: recipeIds.map(recipeId => ({ recipeId, qty: 1 })) });
+  saveState(); hideNewMenuForm(); renderMenuGrid();
+}
 
-function addMenuRecipeRow(selectedRecipeId) {
-  const container = document.getElementById('menuRecipeRows');
+function renderMenuGrid() {
+  const el = document.getElementById('menuGrid');
+  if (!state.menus.length) {
+    el.innerHTML = `<div class="empty"><div class="empty-icon">📁</div><strong>No menus yet</strong><p>Create your first menu to start estimating.</p></div>`; return;
+  }
+  el.innerHTML = `<div class="menu-grid">${state.menus.map(menu => {
+    const trueCost = menuTrueCost(menu);
+    const totalBatches = menuTotalBatches(menu);
+    const avgCost = totalBatches > 0 ? trueCost / totalBatches : 0;
+    const recipeNames = menu.recipes.map(item => {
+      const rec = state.recipes.find(r => r.id === item.recipeId);
+      return rec ? `${rec.name} \u00D7${item.qty}` : '';
+    }).filter(Boolean).join(', ');
+    return `
+    <div class="menu-tile" onclick="showDetail(${menu.id})">
+      <div class="menu-tile-top">
+        <div class="menu-tile-name">${menu.name}</div>
+        <div class="menu-tile-arrow">›</div>
+      </div>
+      <div class="menu-tile-stats">
+        <div class="menu-stat">
+          <div class="menu-stat-val">${totalBatches}</div>
+          <div class="menu-stat-lbl">Total Batches</div>
+        </div>
+        <div class="menu-stat">
+          <div class="menu-stat-val">$${trueCost.toFixed(2)}</div>
+          <div class="menu-stat-lbl">True Cost</div>
+        </div>
+        <div class="menu-stat">
+          <div class="menu-stat-val">$${avgCost.toFixed(2)}</div>
+          <div class="menu-stat-lbl">Avg / Batch</div>
+        </div>
+        <div class="menu-stat">
+          <div class="menu-stat-val">${menu.recipes.length}</div>
+          <div class="menu-stat-lbl">Recipes</div>
+        </div>
+      </div>
+      <div class="menu-tile-recipes">${recipeNames}</div>
+    </div>`;
+  }).join('')}</div>`;
+}
+
+// ── MENU DETAIL ───────────────────────────────────────
+function renderDetail() {
+  const menu = state.menus.find(m => m.id === currentMenuId);
+  if (!menu) return;
+
+  document.getElementById('detail-title').textContent = menu.name;
+
+  const trueCost = menuTrueCost(menu);
+  const totalBatches = menuTotalBatches(menu);
+  const avgCost = totalBatches > 0 ? trueCost / totalBatches : 0;
+
+  document.getElementById('detail-stats').innerHTML = `
+    <div class="detail-stat"><div class="detail-stat-val">${totalBatches}</div><div class="detail-stat-lbl">Total Batches</div></div>
+    <div class="detail-stat"><div class="detail-stat-val">$${trueCost.toFixed(2)}</div><div class="detail-stat-lbl">True Cost</div></div>
+    <div class="detail-stat"><div class="detail-stat-val">$${avgCost.toFixed(2)}</div><div class="detail-stat-lbl">Avg / Batch</div></div>
+    <div class="detail-stat"><div class="detail-stat-val">${menu.recipes.length}</div><div class="detail-stat-lbl">Recipes</div></div>
+  `;
+
+  document.getElementById('detail-recipe-list').innerHTML = menu.recipes.map(item => {
+    const rec = state.recipes.find(r => r.id === item.recipeId);
+    if (!rec) return '';
+    const ideal = recipeIdealCost(rec);
+    return `<div class="ing-row">
+      <span style="flex:2;font-size:0.88rem;font-weight:500">${rec.name}</span>
+      <span style="font-size:0.8rem;color:var(--text-muted);font-family:var(--mono)">${item.qty} batch${item.qty !== 1 ? 'es' : ''} &nbsp;·&nbsp; $${ideal.toFixed(2)}/batch</span>
+    </div>`;
+  }).join('');
+}
+
+function toggleDetailEdit() {
+  const panel = document.getElementById('detail-edit-panel');
+  const isOpen = panel.classList.contains('open');
+  if (!isOpen) {
+    const menu = state.menus.find(m => m.id === currentMenuId);
+    if (!menu) return;
+    document.getElementById('detail-menu-name').value = menu.name;
+    const container = document.getElementById('detail-menu-recipe-rows');
+    container.innerHTML = '';
+    menu.recipes.forEach(item => addDetailMenuRecipeRow(item.recipeId));
+  }
+  panel.classList.toggle('open');
+}
+
+function addDetailMenuRecipeRow(selectedRecipeId) {
+  const container = document.getElementById('detail-menu-recipe-rows');
   const row = document.createElement('div');
   row.className = 'ing-row';
   row.innerHTML = `
@@ -662,88 +805,42 @@ function addMenuRecipeRow(selectedRecipeId) {
   container.appendChild(row);
 }
 
-function saveMenu() {
-  const name = document.getElementById('menu-name').value.trim();
+function saveDetailMenuEdit() {
+  const name = document.getElementById('detail-menu-name').value.trim();
   if (!name) { alert('Menu name is required.'); return; }
-  const rows = document.querySelectorAll('#menuRecipeRows .ing-row');
+  const rows = document.querySelectorAll('#detail-menu-recipe-rows .ing-row');
   const newRecipeIds = [];
   rows.forEach(row => {
     const recipeId = parseInt(row.querySelector('select').value);
     if (recipeId) newRecipeIds.push(recipeId);
   });
-  const editId = parseInt(document.getElementById('menu-edit-id').value);
-  if (editId) {
-    const menu = state.menus.find(m => m.id === editId);
-    if (menu) {
-      const existingQtys = {};
-      menu.recipes.forEach(r => existingQtys[r.recipeId] = r.qty);
-      menu.name = name;
-      menu.recipes = newRecipeIds.map(recipeId => ({ recipeId, qty: existingQtys[recipeId] || 1 }));
-    }
-  } else {
-    state.menus.push({ id: state.nextMenuId++, name, recipes: newRecipeIds.map(recipeId => ({ recipeId, qty: 1 })) });
+  const menu = state.menus.find(m => m.id === currentMenuId);
+  if (menu) {
+    const existingQtys = {};
+    menu.recipes.forEach(r => existingQtys[r.recipeId] = r.qty);
+    menu.name = name;
+    menu.recipes = newRecipeIds.map(recipeId => ({ recipeId, qty: existingQtys[recipeId] || 1 }));
   }
   saveState();
-  closeMenuForm();
-  renderMenus();
+  document.getElementById('detail-edit-panel').classList.remove('open');
+  renderDetail();
 }
 
-function deleteMenu(id) {
-  if (!confirm('Delete this menu?')) return;
-  state.menus = state.menus.filter(m => m.id !== id);
+function deleteCurrentMenu() {
+  const menu = state.menus.find(m => m.id === currentMenuId);
+  if (!menu) return;
+  if (!confirm(`Delete "${menu.name}"?`)) return;
+  state.menus = state.menus.filter(m => m.id !== currentMenuId);
   saveState();
-  renderMenus();
+  showGrid();
 }
 
-function renderMenus() {
-  const el = document.getElementById('menuList');
-  if (!state.menus.length) {
-    el.innerHTML = `<div class="empty"><div class="empty-icon">📁</div><strong>No menus yet</strong></div>`;
-    return;
-  }
-  el.innerHTML = state.menus.map(menu => {
-    const lines = menu.recipes.map(item => {
-      const rec = state.recipes.find(r => r.id === item.recipeId);
-      return rec ? `<div class="ing-row"><span style="flex:2;font-size:0.88rem">${rec.name}</span></div>` : '';
-    }).join('');
-    const safeMenu = JSON.stringify(menu).replace(/"/g, '&quot;');
-    return `
-    <div class="card">
-      <div class="card-top">
-        <div class="card-info" onclick="toggleCard('menu-${menu.id}')">
-          <div class="card-title">${menu.name}</div>
-          <div class="card-sub">${menu.recipes.length} recipe${menu.recipes.length !== 1 ? 's' : ''}</div>
-        </div>
-        <div class="card-actions">
-          <button class="btn-ghost btn-sm" onclick="openMenuForm(JSON.parse(this.dataset.menu))" data-menu="${safeMenu}">Edit</button>
-          <button class="btn-danger btn-sm" onclick="deleteMenu(${menu.id})">✕</button>
-          <span class="caret" id="card-caret-menu-${menu.id}" onclick="toggleCard('menu-${menu.id}')">▶</span>
-        </div>
-      </div>
-      <div class="card-body" id="card-body-menu-${menu.id}">${lines}</div>
-    </div>`;
-  }).join('');
-}
-
-// ── ESTIMATES ─────────────────────────────────────────
-function calcIngUsage(menu) {
-  const ingUsage = {};
-  menu.recipes.forEach(item => {
-    const rec = state.recipes.find(r => r.id === item.recipeId);
-    if (!rec) return;
-    rec.ingredients.forEach(ri => {
-      const ing = state.ingredients.find(i => i.id === ri.ingId);
-      if (!ing) return;
-      if (!ingUsage[ri.ingId]) ingUsage[ri.ingId] = { ing, consumed: 0, cost: 0 };
-      ingUsage[ri.ingId].consumed += ri.amount * item.qty;
-      ingUsage[ri.ingId].cost += costPerUom(ing) * ri.amount * item.qty;
-    });
-  });
-  Object.values(ingUsage).forEach(u => {
-    u.unitsOpened = Math.ceil(u.consumed / u.ing.size);
-    u.unitsCost = u.unitsOpened * u.ing.price;
-  });
-  return ingUsage;
+// ── ESTIMATOR ─────────────────────────────────────────
+function setText(id, val, extraClass) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = val;
+  el.className = 'num' + (extraClass ? ' ' + extraClass : '');
 }
 
 function updateQty(menuId, recipeId, val) {
@@ -752,48 +849,10 @@ function updateQty(menuId, recipeId, val) {
   const item = menu.recipes.find(r => r.recipeId === recipeId);
   if (item) item.qty = Math.max(0, parseInt(val) || 0);
   saveState();
-  refreshEstimates(menu);
+  refreshEstimator(menu);
 }
 
-function setText(id, val, extraClass) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  el.textContent = val;
-  el.className = 'num' + (extraClass ? ' ' + extraClass : '');
-}
-
-// ── SWEET SPOT ────────────────────────────────────────
-function sweetSpotHint(recipe, currentQty) {
-  if (!currentQty || currentQty <= 0) return '';
-  const currentCost = recipeActualCostPerUnit(recipe, currentQty);
-  if (currentCost === 0) return '';
-
-  const scanTo = currentQty * 3;
-  let bestQty = null;
-  let bestCost = currentCost;
-
-  for (let q = currentQty + 1; q <= scanTo; q++) {
-    const c = recipeActualCostPerUnit(recipe, q);
-    if (c < bestCost) { bestCost = c; bestQty = q; break; } // first improvement
-  }
-
-  // Check if current qty is already a local minimum within scan range
-  // (no improvement found, or improvement is below 10% threshold)
-  if (!bestQty || (currentCost - bestCost) / currentCost < 0.10) {
-    // Are we already at a sweet spot? Check if going one fewer costs more
-    if (currentQty === 1) return `<div class="sweet-spot optimal">✓ Good quantity</div>`;
-    const prevCost = recipeActualCostPerUnit(recipe, currentQty - 1);
-    if (prevCost > currentCost) {
-      return `<div class="sweet-spot optimal">✓ You're at a good quantity</div>`;
-    }
-    return '';
-  }
-
-  const saving = currentCost - bestCost;
-  return `<div class="sweet-spot hint">↓ Make ${bestQty} batches instead and save $${saving.toFixed(2)}/batch</div>`;
-}
-
-function refreshEstimates(menu) {
+function refreshEstimator(menu) {
   const ingUsage = calcIngUsage(menu);
   const totalIngCost = Object.values(ingUsage).reduce((s, u) => s + u.cost, 0);
   const totalUnitCost = Object.values(ingUsage).reduce((s, u) => s + u.unitsCost, 0);
@@ -832,16 +891,7 @@ function refreshEstimates(menu) {
   if (recFoot) recFoot.innerHTML = `<tr><td>Total</td><td></td><td></td><td></td><td class="num">$${totalUnitCost.toFixed(2)}</td></tr>`;
 }
 
-function renderEstimates() {
-  const menuId = parseInt(document.getElementById('est-menu-select').value);
-  const el = document.getElementById('estimatesContent');
-  if (!menuId) {
-    el.innerHTML = `<div class="empty"><div class="empty-icon">📊</div><strong>Select a menu to see estimates</strong></div>`;
-    return;
-  }
-  const menu = state.menus.find(m => m.id === menuId);
-  if (!menu) return;
-
+function renderEstimator(menu) {
   const ingUsage = calcIngUsage(menu);
   const totalIngCost = Object.values(ingUsage).reduce((s, u) => s + u.cost, 0);
   const totalUnitCost = Object.values(ingUsage).reduce((s, u) => s + u.unitsCost, 0);
@@ -852,11 +902,10 @@ function renderEstimates() {
     if (!rec) return '';
     const ideal = recipeIdealCost(rec);
     const actual = recipeActualCostPerUnit(rec, item.qty);
-    const hint = sweetSpotHint(rec, item.qty);
     return `<tr>
       <td>
         <div>${rec.name}</div>
-        <div id="est-hint-${rec.id}">${hint}</div>
+        <div id="est-hint-${rec.id}">${sweetSpotHint(rec, item.qty)}</div>
       </td>
       <td class="num">$${ideal.toFixed(2)}</td>
       <td class="num"><input class="qty-input" type="number" min="0" value="${item.qty}" oninput="updateQty(${menu.id}, ${rec.id}, this.value)"></td>
@@ -874,15 +923,15 @@ function renderEstimates() {
       <td class="num">$${u.unitsCost.toFixed(2)}</td>
     </tr>`).join('');
 
-  el.innerHTML = `
+  document.getElementById('estimatorContent').innerHTML = `
     <div class="summary-grid">
       <div class="summary-box"><div class="val" id="summ-total-units">${totalUnits}</div><div class="lbl">Total Batches</div></div>
       <div class="summary-box"><div class="val" id="summ-ing-cost">$${totalIngCost.toFixed(2)}</div><div class="lbl">Recipe Cost</div></div>
       <div class="summary-box"><div class="val" id="summ-unit-cost">$${totalUnitCost.toFixed(2)}</div><div class="lbl">True Cost</div></div>
-      <div class="summary-box"><div class="val" id="summ-avg">${totalUnits ? '$' + (totalUnitCost / totalUnits).toFixed(2) : '—'}</div><div class="lbl">Actual Avg / Batch</div></div>
+      <div class="summary-box"><div class="val" id="summ-avg">${totalUnits ? '$' + (totalUnitCost / totalUnits).toFixed(2) : '—'}</div><div class="lbl">Avg / Batch</div></div>
     </div>
     <div class="card" style="margin-bottom:16px">
-      <div style="padding:4px 0 12px"><span class="section-label">By Recipe</span> <span style="font-size:0.75rem;color:var(--text-muted);margin-left:8px">Edit batches — actual cost updates as you cross package boundaries</span></div>
+      <div style="padding:4px 0 12px"><span class="section-label">By Recipe</span> <span style="font-size:0.75rem;color:var(--text-muted);margin-left:8px">Edit batches — true cost updates as you cross package boundaries</span></div>
       <table class="est-table">
         <thead><tr><th>Recipe</th><th style="text-align:right">Recipe Cost</th><th style="text-align:right">Batches</th><th style="text-align:right">True Cost/Batch</th><th style="text-align:right">Total</th></tr></thead>
         <tbody>${recipeRows}</tbody>
@@ -900,6 +949,17 @@ function renderEstimates() {
 }
 
 // ── SHOPPING LIST ─────────────────────────────────────
+function populateShoppingSelect() {
+  const sel = document.getElementById('shop-menu-select');
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">— Select a menu —</option>';
+  state.menus.forEach(m => {
+    const opt = document.createElement('option');
+    opt.value = m.id; opt.textContent = m.name;
+    sel.appendChild(opt);
+  });
+  if (cur) sel.value = cur;
+}
 function renderShoppingList() {
   const menuId = parseInt(document.getElementById('shop-menu-select').value);
   const el = document.getElementById('shoppingContent');
@@ -923,7 +983,7 @@ function renderShoppingList() {
         <div class="shop-item">
           <div>
             <div style="font-weight:500">${i.name}</div>
-            <div style="font-size:0.75rem;color:var(--text-muted)">${i.pkgsNeeded} pkg${i.pkgsNeeded !== 1 ? 's' : ''} × ${i.size} ${i.uom}s @ $${i.price.toFixed(2)} ea</div>
+            <div style="font-size:0.75rem;color:var(--text-muted)">${i.pkgsNeeded} pkg${i.pkgsNeeded !== 1 ? 's' : ''} \u00D7 ${i.size} ${i.uom}s @ $${i.price.toFixed(2)} ea</div>
           </div>
           <div class="shop-qty">$${i.totalCost.toFixed(2)}</div>
         </div>`).join('')}
