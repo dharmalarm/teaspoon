@@ -130,6 +130,14 @@
                         .shop-item:last-child { border-bottom: none; }
                         .shop-qty { font-family: var(--mono); font-size: 0.82rem; color: var(--accent); font-weight: 500; white-space: nowrap; margin-left: 12px; }
                         
+                        .help-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 18px 20px; margin-bottom: 14px; line-height: 1.55; font-size: 0.9rem; }
+                        .help-card h2 { font-family: var(--serif); font-weight: normal; font-size: 1.25rem; color: var(--accent); margin-bottom: 8px; }
+                        .help-card p { margin-bottom: 8px; }
+                        .help-card p:last-child, .help-card ul:last-child, .help-card ol:last-child { margin-bottom: 0; }
+                        .help-card ul, .help-card ol { padding-left: 20px; margin-bottom: 8px; }
+                        .help-card li { margin-bottom: 4px; }
+                        .help-example { background: var(--surface2); border-radius: 8px; padding: 10px 14px; margin: 10px 0; font-family: var(--mono); font-size: 0.8rem; line-height: 1.7; }
+                        .help-tip { color: var(--text-muted); font-size: 0.84rem; }
                         .empty { text-align: center; padding: 48px 24px; color: var(--text-muted); }
                         .empty-icon { font-size: 2.5rem; margin-bottom: 12px; opacity: 0.4; }
                         .empty p { font-size: 0.88rem; margin-top: 6px; }
@@ -170,6 +178,7 @@
             <button class="nav-btn" onclick="showView('recipes', this)">Recipes</button>
             <button class="nav-btn" onclick="showView('ingredients', this)">Ingredients</button>
             <button class="nav-btn" onclick="showView('shopping', this)">Shopping List</button>
+            <button class="nav-btn" onclick="showView('help', this)">Help</button>
         </nav>
         
         <main>
@@ -310,7 +319,13 @@
                     <div class="empty"><div class="empty-icon">🛒</div><strong>Select a menu to generate a shopping list</strong></div>
                 </div>
             </div>
-            
+
+            <!-- HELP -->
+            <div id="view-help" class="view">
+                <div class="view-header"><div class="view-title">Help</div></div>
+                <div id="helpContent"></div>
+            </div>
+
         </main>
         
         <script>
@@ -927,7 +942,96 @@
     </div>`;
             }
             
+            // ── HELP ──────────────────────────────────────────────
+            function renderHelp() {
+                const h = cfg.help || {};
+                const app = cfg.appName;
+                const ie = h.ingExample || { pkg: 'a 16 oz package of an ingredient', uom: 'oz', size: 16, price: 8.00 };
+                const ce = h.costExample || { name: 'an ingredient', uom: 'oz', amount: 2, size: 16, price: 8.00 };
+                const money = n => '$' + n.toFixed(2);
+                const recipeCost = ce.amount / ce.size * ce.price;
+                const fullBatches = Math.round(ce.size / ce.amount);
+                const preloaded = (cfg.defaultState.ingredients || []).length;
+                const event = h.event || 'an upcoming market or event';
+                document.getElementById('helpContent').innerHTML = `
+    <div class="help-card">
+      <h2>What ${app} does</h2>
+      <p>${app} answers one question: <strong>What do I need to make this, and what will it cost me?</strong> Tell it what your ingredients cost and what goes into your recipes, then plan what you're making for ${event}. It works out what you'll spend and what to buy.</p>
+    </div>
+
+    <div class="help-card">
+      <h2>Getting started</h2>
+      <ol>
+        <li><strong>Ingredients:</strong> check the prices and package sizes of what you buy.</li>
+        <li><strong>Recipes:</strong> add your recipes and how much of each ingredient one batch uses.</li>
+        <li><strong>Menus:</strong> make a menu for an event, with how many batches of each recipe you'll make.</li>
+        <li><strong>Estimator and Shopping List:</strong> see what it will cost and what to buy.</li>
+      </ol>
+    </div>
+
+    <div class="help-card">
+      <h2>Ingredients</h2>
+      <p>Each ingredient has four fields:</p>
+      <ul>
+        <li><strong>Name</strong>: what it is.</li>
+        <li><strong>Unit of Measure</strong>: the unit you measure it in when you make a recipe (cup, tbsp, oz…).</li>
+        <li><strong>Package Size</strong>: how many of those units come in the package you buy.</li>
+        <li><strong>Package Price</strong>: what you pay for one package.</li>
+      </ul>
+      <div class="help-example">Example: ${ie.pkg}<br>Unit: ${ie.uom} &nbsp;·&nbsp; Package Size: ${ie.size} &nbsp;·&nbsp; Package Price: ${ie.price.toFixed(2)}</div>
+      <p class="help-tip">Tip: pick the unit your recipes use. Recipe amounts are entered in each ingredient's unit, so if your recipes say cups, use cups here.</p>
+      ${preloaded ? `<p class="help-tip">${app} comes with ${preloaded} common ingredients already filled in${h.priceNote ? ' ' + h.priceNote : ''}. Tap <strong>Edit</strong> on any of them to change the price to what you actually pay.</p>` : ''}
+    </div>
+
+    <div class="help-card">
+      <h2>Recipes</h2>
+      <p>Tap <strong>+ Add Recipe</strong>, give it a name, then use <strong>+ Add</strong> to list its ingredients.</p>
+      <ul>
+        <li>Amounts are for <strong>one batch</strong>.</li>
+        <li>Each amount is in that ingredient's unit (shown next to its name).</li>
+      </ul>
+      <p>The cost shown on a recipe is its <strong>Recipe Cost</strong>. See the Estimator section below for what that means.</p>
+    </div>
+
+    <div class="help-card">
+      <h2>Menus</h2>
+      <p>A menu is your plan for one event, like ${event}. Tap <strong>+ New Menu</strong>, name it and add the recipes you're making.</p>
+      <p>Tap a menu to see its totals. From there you can <strong>Open Estimator</strong>, <strong>Edit Menu</strong> or <strong>Delete</strong> it.</p>
+    </div>
+
+    <div class="help-card">
+      <h2>The Estimator</h2>
+      <p>This is where you find out what your menu really costs. It shows two numbers for each recipe:</p>
+      <ul>
+        <li><strong>Recipe Cost</strong>: what one batch costs if you only paid for exactly what you use.</li>
+        <li><strong>True Cost</strong>: what one batch costs once you count the whole packages you have to buy. This is the real number.</li>
+      </ul>
+      <div class="help-example">Example: ${ce.name}<br>One batch uses ${ce.amount} ${ce.uom}. A package is ${ce.size} ${ce.uom} for ${money(ce.price)}.<br>Recipe Cost: ${ce.amount} ÷ ${ce.size} × ${money(ce.price)} = <strong>${money(recipeCost)}</strong><br>True Cost for 1 batch: you have to buy the whole package, so <strong>${money(ce.price)}</strong><br>True Cost for ${fullBatches} batches: they use up exactly one package, so <strong>${money(ce.price / fullBatches)}</strong> each</div>
+      <p>Change the number in the <strong>Batches</strong> column and everything updates right away.</p>
+      <p><strong>Sweet spot hints.</strong> Sometimes making a few more batches lowers your cost per batch, because you use up packages you're already buying. When that saves enough to matter, you'll see a hint under the recipe like <em>"↓ Make 4 batches instead and save $0.85/batch."</em> A <em>"✓ Good quantity"</em> hint means you're already in a good spot.</p>
+      <p>The <strong>By Ingredient</strong> table shows how much of each ingredient the whole menu uses and how many packages you'll open.</p>
+    </div>
+
+    <div class="help-card">
+      <h2>Shopping List</h2>
+      <p>Pick a menu to see how many packages of each ingredient to buy and the estimated total. It uses the batch numbers you set in the Estimator.</p>
+    </div>
+
+    <div class="help-card">
+      <h2>Keeping your data safe</h2>
+      <p>Your data saves automatically, but <strong>only in this browser on this device</strong>. Nothing is stored online.</p>
+      <ul>
+        <li><strong>Back up</strong> (top of the screen) saves a file with all your ingredients, recipes and menus. Do this regularly and keep the file somewhere safe, like your email.</li>
+        <li><strong>Restore</strong> loads a backup file. It replaces everything currently in ${app}.</li>
+        <li><strong>Reset to defaults</strong> erases your data and puts the sample data back.</li>
+      </ul>
+      <p class="help-tip">On an iPhone or iPad, add ${app} to your home screen (Share → Add to Home Screen) and open it from there. Otherwise Safari may clear your data if you don't open ${app} for a while.</p>
+      <p class="help-tip">Clearing your browser history, or switching to another device or browser, means starting over from a backup.</p>
+    </div>`;
+            }
+
             // ── INIT ──────────────────────────────────────────────
+            renderHelp();
             showGrid();
         </script>
     </body>
