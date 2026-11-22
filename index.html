@@ -928,7 +928,7 @@
       <div class="summary-box"><div class="val" id="summ-avg">${totalUnits ? '$' + (totalUnitCost / totalUnits).toFixed(2) : '—'}</div><div class="lbl">Avg / Batch</div></div>
     </div>
     <div class="card" style="margin-bottom:16px">
-      <div style="padding:4px 0 12px"><span class="section-label">By Recipe</span> <span style="font-size:0.75rem;color:var(--text-muted);margin-left:8px">Edit batches — true cost updates as you cross package boundaries</span></div>
+      <div style="padding:12px 10px"><span class="section-label">By Recipe</span> <span style="font-size:0.75rem;color:var(--text-muted);margin-left:8px">Edit batches — true cost updates as you cross package boundaries</span></div>
       <table class="est-table">
         <thead><tr><th>Recipe</th><th style="text-align:right">Recipe Cost</th><th style="text-align:right">Batches</th><th style="text-align:right">True Cost/Batch</th><th style="text-align:right">Total</th></tr></thead>
         <tbody>${recipeRows}</tbody>
@@ -936,7 +936,7 @@
       </table>
     </div>
     <div class="card">
-      <div style="padding:4px 0 12px"><span class="section-label">By Ingredient</span></div>
+      <div style="padding:12px 10px"><span class="section-label">By Ingredient</span></div>
       <table class="est-table">
         <thead><tr><th>Ingredient</th><th style="text-align:right">Consumed</th><th style="text-align:right">Pkgs Opened</th><th style="text-align:right">Recipe $</th><th style="text-align:right">True $</th></tr></thead>
         <tbody id="ing-breakdown-body">${ingRows}</tbody>
@@ -971,8 +971,8 @@
                 })).sort((a, b) => a.name.localeCompare(b.name));
                 const totalCost = items.reduce((s, i) => s + i.totalCost, 0);
                 el.innerHTML = `
-      <div class="card">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div class="card" style="padding:14px 16px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
         <div class="section-label">${items.length} items to buy</div>
         <div style="font-family:var(--mono);font-size:0.88rem;font-weight:600;color:var(--accent)">Est. $${totalCost.toFixed(2)}</div>
       </div>
