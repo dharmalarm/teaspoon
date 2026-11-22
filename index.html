@@ -86,9 +86,6 @@
                         .detail-stat-val { font-family: var(--serif); font-size: 1.5rem; color: var(--accent); }
                         .detail-stat-lbl { font-size: 0.68rem; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-muted); margin-top: 2px; }
                         .detail-actions { display: flex; gap: 10px; margin-bottom: 24px; flex-wrap: wrap; }
-                        .detail-edit-panel { background: var(--accent-light); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 20px; display: none; }
-                        .detail-edit-panel.open { display: block; }
-                        .detail-edit-panel h3 { font-family: var(--serif); font-size: 1.1rem; color: var(--accent); margin-bottom: 14px; }
                         
                         .estimator-back { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; }
                         .estimator-menu-name { font-family: var(--serif); font-size: 1.6rem; color: var(--text); }
@@ -130,6 +127,31 @@
                         .shop-item:last-child { border-bottom: none; }
                         .shop-qty { font-family: var(--mono); font-size: 0.82rem; color: var(--accent); font-weight: 500; white-space: nowrap; margin-left: 12px; }
                         
+                        .add-row-btn { margin-top: 10px; }
+                        .menu-card { padding: 16px; }
+                        .menu-rec-row { display: grid; grid-template-columns: minmax(0,1fr) 64px 84px 30px; gap: 8px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--surface2); }
+                        .menu-rec-row:last-child { border-bottom: none; }
+                        .menu-rec-head { font-size: 0.68rem; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-muted); padding-top: 0; border-bottom: 1px solid var(--border); }
+                        .menu-rec-head span:nth-child(2), .menu-rec-head span:nth-child(3) { text-align: right; }
+                        .menu-rec-name { font-size: 0.9rem; font-weight: 500; }
+                        .menu-rec-row .qty-input { width: 100%; justify-self: end; }
+                        .menu-rec-cost { font-family: var(--mono); font-size: 0.82rem; text-align: right; color: var(--text-muted); }
+                        .menu-rec-picker { grid-column: 1 / 4; }
+                        .menu-empty { font-size: 0.85rem; color: var(--text-muted); padding: 10px 0; }
+                        .form-actions { display: flex; gap: 8px; margin-top: 16px; align-items: center; flex-wrap: wrap; }
+                        .form-actions .form-delete { margin-left: auto; }
+                        .currency-input { position: relative; }
+                        .currency-input span { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 0.88rem; pointer-events: none; }
+                        .currency-input input { padding-left: 22px; }
+                        .rec-ing-row { display: grid; grid-template-columns: minmax(0,3fr) 90px minmax(60px,1.5fr) 30px; gap: 8px; align-items: center; }
+                        .ing-uom-label { font-size: 0.8rem; color: var(--text-muted); font-family: var(--mono); min-width: 0; overflow-wrap: anywhere; line-height: 1.3; }
+                        @media (max-width: 600px) {
+                            .rec-ing-row { grid-template-columns: 90px minmax(0,1fr) 30px; row-gap: 6px; padding: 10px 0; }
+                            .rec-ing-row select { grid-column: 1 / -1; }
+                        }
+                        .card-clickable { cursor: pointer; }
+                        .card-chevron { color: var(--text-muted); font-size: 1.2rem; padding: 0 4px; flex-shrink: 0; }
+                        select.placeholder { color: var(--text-muted); }
                         .help-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 18px 20px; margin-bottom: 14px; line-height: 1.55; font-size: 0.9rem; }
                         .help-card h2 { font-family: var(--serif); font-weight: normal; font-size: 1.25rem; color: var(--accent); margin-bottom: 8px; }
                         .help-card p { margin-bottom: 8px; }
@@ -196,11 +218,9 @@
                             <div class="form-group" style="flex:3"><label>Menu Name</label><input id="new-menu-name" type="text" placeholder="e.g. Saturday Farmers Market"></div>
                         </div>
                         <div class="divider"></div>
-                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-                            <div class="section-label">Recipes</div>
-                            <button class="btn btn-secondary btn-sm" onclick="addNewMenuRecipeRow()">+ Add Recipe</button>
-                        </div>
+                        <div class="section-label" style="margin-bottom:10px">Recipes</div>
                         <div id="newMenuRecipeRows"></div>
+                        <button class="btn btn-secondary btn-sm add-row-btn" onclick="addNewMenuRecipeRow()">+ Add Recipe</button>
                         <div style="display:flex;gap:8px;margin-top:16px">
                             <button class="btn btn-primary" onclick="saveNewMenu()">Save Menu</button>
                             <button class="btn btn-secondary" onclick="hideNewMenuForm()">Cancel</button>
@@ -217,28 +237,14 @@
                     <div class="detail-stats" id="detail-stats"></div>
                     <div class="detail-actions">
                         <button class="btn btn-primary" onclick="openEstimator()">Open Estimator</button>
-                        <button class="btn btn-secondary" onclick="toggleDetailEdit()">Edit Menu</button>
                         <button class="btn-danger" onclick="deleteCurrentMenu()">Delete</button>
                     </div>
-                    <div class="detail-edit-panel" id="detail-edit-panel">
-                        <h3>Edit Menu</h3>
-                        <div class="form-row">
-                            <div class="form-group" style="flex:3"><label>Menu Name</label><input id="detail-menu-name" type="text"></div>
-                        </div>
+                    <div class="card menu-card">
+                        <div class="form-group"><label>Menu Name</label><input id="detail-menu-name" type="text" onchange="renameCurrentMenu(this)"></div>
                         <div class="divider"></div>
-                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-                            <div class="section-label">Recipes</div>
-                            <button class="btn btn-secondary btn-sm" onclick="addDetailMenuRecipeRow()">+ Add Recipe</button>
-                        </div>
-                        <div id="detail-menu-recipe-rows"></div>
-                        <div style="display:flex;gap:8px;margin-top:16px">
-                            <button class="btn btn-primary" onclick="saveDetailMenuEdit()">Save</button>
-                            <button class="btn btn-secondary" onclick="toggleDetailEdit()">Cancel</button>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div style="padding:4px 0 12px"><span class="section-label">Recipes in this menu</span></div>
+                        <div class="menu-rec-row menu-rec-head"><span>Recipe</span><span>Batches</span><span>Cost / batch</span><span></span></div>
                         <div id="detail-recipe-list"></div>
+                        <button class="btn btn-secondary btn-sm add-row-btn" onclick="addMenuRecipePicker()">+ Add Recipe</button>
                     </div>
                 </div>
                 
@@ -267,14 +273,13 @@
                             <div class="form-group"><label>Description (optional)</label><textarea id="rec-desc" placeholder="Brief description or yield..."></textarea></div>
                         </div>
                         <div class="divider"></div>
-                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-                            <div class="section-label">Ingredients</div>
-                            <button class="btn btn-secondary btn-sm" onclick="addIngRow()">+ Add</button>
-                        </div>
+                        <div class="section-label" style="margin-bottom:10px">Ingredients</div>
                         <div id="recIngRows"></div>
-                        <div style="display:flex;gap:8px;margin-top:16px">
+                        <button class="btn btn-secondary btn-sm add-row-btn" onclick="addIngRow()">+ Add Ingredient</button>
+                        <div class="form-actions">
                             <button class="btn btn-primary" onclick="saveRecipe()">Save Recipe</button>
                             <button class="btn btn-secondary" onclick="closeRecipeForm()">Cancel</button>
+                            <button class="btn-danger form-delete" id="rec-delete-btn" onclick="deleteRecipe()">Delete Recipe</button>
                         </div>
                 </div>
                 <div id="recipeList"></div>
@@ -295,12 +300,13 @@
                             <div class="form-group" style="flex:2"><label>Unit of Measure</label><input id="ing-uom" type="text" placeholder="e.g. cup, tsp, oz"></div>
                         </div>
                         <div class="form-row">
-                            <div class="form-group"><label>Package Size (in UoM)</label><input id="ing-size" type="number" placeholder="e.g. 18.9" min="0" step="any"></div>
-                            <div class="form-group"><label>Package Price ($)</label><input id="ing-price" type="number" placeholder="e.g. 1.97" min="0" step="0.01"></div>
+                            <div class="form-group"><label>Package Size</label><input id="ing-size" type="number" placeholder="e.g. 18.9" min="0" step="any"></div>
+                            <div class="form-group"><label>Package Price</label><div class="currency-input"><span>$</span><input id="ing-price" type="number" inputmode="decimal" placeholder="0.00" min="0" step="0.01"></div></div>
                         </div>
-                        <div style="display:flex;gap:8px;margin-top:4px">
+                        <div class="form-actions" style="margin-top:4px">
                             <button class="btn btn-primary" onclick="saveIngredient()">Save</button>
                             <button class="btn btn-secondary" onclick="closeIngForm()">Cancel</button>
+                            <button class="btn-danger form-delete" id="ing-delete-btn" onclick="deleteIngredient()">Delete Ingredient</button>
                         </div>
                 </div>
                 <div id="ingList"></div>
@@ -412,8 +418,8 @@
                 document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
                 document.getElementById('view-' + name).classList.add('active');
                 if (btn) btn.classList.add('active');
-                if (name === 'ingredients') renderIngredients();
-                if (name === 'recipes') renderRecipes();
+                if (name === 'ingredients') closeIngForm();
+                if (name === 'recipes') closeRecipeForm();
                 if (name === 'menus') showGrid();
                 if (name === 'shopping') { populateShoppingSelect(); renderShoppingList(); }
             }
@@ -431,7 +437,6 @@
                 document.getElementById('screen-grid').style.display = 'none';
                 document.getElementById('screen-detail').style.display = 'block';
                 document.getElementById('screen-estimator').style.display = 'none';
-                document.getElementById('detail-edit-panel').classList.remove('open');
                 renderDetail();
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
@@ -519,29 +524,38 @@
                 return `<div class="sweet-spot hint">\u2193 Make ${bestQty} batches instead and save $${(currentCost - bestCost).toFixed(2)}/batch</div>`;
             }
             function ingOptsHTML(selectedId) {
-                return state.ingredients.map(i =>
-                                             `<option value="${i.id}" ${i.id === selectedId ? 'selected' : ''}>${i.name} (${i.uom})</option>`
-                                             ).join('');
+                return `<option value="" disabled ${selectedId ? '' : 'selected'}>— Select an ingredient —</option>` +
+                    state.ingredients.map(i => `<option value="${i.id}" ${i.id === selectedId ? 'selected' : ''}>${i.name}</option>`).join('');
             }
             function recipeOptsHTML(selectedId) {
-                return state.recipes.map(r =>
-                                         `<option value="${r.id}" ${r.id === selectedId ? 'selected' : ''}>${r.name}</option>`
-                                         ).join('');
+                return `<option value="" disabled ${selectedId ? '' : 'selected'}>— Select a recipe —</option>` +
+                    state.recipes.map(r => `<option value="${r.id}" ${r.id === selectedId ? 'selected' : ''}>${r.name}</option>`).join('');
+            }
+            // Shows a form "screen" in a tab: hides the tab's header and list while the form is open
+            function setFormMode(viewId, formId, listId, open) {
+                document.querySelector('#' + viewId + ' .view-header').style.display = open ? 'none' : '';
+                document.getElementById(listId).style.display = open ? 'none' : '';
+                document.getElementById(formId).style.display = open ? 'block' : 'none';
+                window.scrollTo({ top: 0 });
             }
             
             // ── INGREDIENTS ───────────────────────────────────────
-            function openIngForm(ing) {
+            function openIngForm(id) {
+                const ing = id ? state.ingredients.find(i => i.id === id) : null;
                 document.getElementById('ingFormTitle').textContent = ing ? 'Edit Ingredient' : 'New Ingredient';
                 document.getElementById('ing-edit-id').value = ing ? ing.id : '';
                 document.getElementById('ing-name').value = ing ? ing.name : '';
                 document.getElementById('ing-uom').value = ing ? ing.uom : '';
                 document.getElementById('ing-size').value = ing ? ing.size : '';
-                document.getElementById('ing-price').value = ing ? ing.price : '';
-                document.getElementById('ingForm').style.display = 'block';
-                document.getElementById('ing-name').focus();
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                document.getElementById('ing-price').value = ing ? ing.price.toFixed(2) : '';
+                document.getElementById('ing-delete-btn').style.display = ing ? '' : 'none';
+                setFormMode('view-ingredients', 'ingForm', 'ingList', true);
+                if (!ing) document.getElementById('ing-name').focus();
             }
-            function closeIngForm() { document.getElementById('ingForm').style.display = 'none'; }
+            function closeIngForm() {
+                setFormMode('view-ingredients', 'ingForm', 'ingList', false);
+                renderIngredients();
+            }
             function saveIngredient() {
                 const name = document.getElementById('ing-name').value.trim();
                 const uom = document.getElementById('ing-uom').value.trim();
@@ -555,12 +569,20 @@
                 } else {
                     state.ingredients.push({ id: state.nextIngId++, name, uom, size, price });
                 }
-                saveState(); closeIngForm(); renderIngredients();
+                saveState(); closeIngForm();
             }
-            function deleteIngredient(id) {
-                if (!confirm('Delete this ingredient?')) return;
+            function deleteIngredient() {
+                const id = parseInt(document.getElementById('ing-edit-id').value);
+                const ing = state.ingredients.find(i => i.id === id);
+                if (!ing) return;
+                const usedIn = state.recipes.filter(r => r.ingredients.some(ri => ri.ingId === id));
+                const msg = usedIn.length
+                    ? `Delete "${ing.name}"?\n\nIt's used in ${usedIn.length} recipe${usedIn.length !== 1 ? 's' : ''}: ${usedIn.map(r => r.name).join(', ')}. Deleting it removes it from ${usedIn.length !== 1 ? 'those recipes' : 'that recipe'}.\n\nThis can't be undone.`
+                    : `Delete "${ing.name}"?\n\nThis can't be undone.`;
+                if (!confirm(msg)) return;
                 state.ingredients = state.ingredients.filter(i => i.id !== id);
-                saveState(); renderIngredients();
+                usedIn.forEach(r => { r.ingredients = r.ingredients.filter(ri => ri.ingId !== id); });
+                saveState(); closeIngForm();
             }
             function renderIngredients() {
                 const el = document.getElementById('ingList');
@@ -568,44 +590,52 @@
                     el.innerHTML = `<div class="empty"><div class="empty-icon">${cfg.emptyIcons.ingredients}</div><strong>No ingredients yet</strong></div>`; return;
                 }
                 el.innerHTML = state.ingredients.map(ing => `
-    <div class="card">
+    <div class="card card-clickable" onclick="openIngForm(${ing.id})">
       <div class="card-top">
         <div class="card-info">
           <div class="card-title">${ing.name}</div>
           <div class="card-sub">${ing.size} ${ing.uom}s / pkg &nbsp;·&nbsp; $${ing.price.toFixed(2)} / pkg &nbsp;·&nbsp; $${costPerUom(ing).toFixed(3)} / ${ing.uom}</div>
         </div>
-        <div class="card-actions">
-          <button class="btn-ghost btn-sm" onclick="openIngForm(${JSON.stringify(ing).replace(/"/g, '&quot;')})">Edit</button>
-          <button class="btn-danger btn-sm" onclick="deleteIngredient(${ing.id})">✕</button>
-        </div>
+        <div class="card-chevron">›</div>
       </div>
     </div>`).join('');
             }
             
             // ── RECIPES ───────────────────────────────────────────
-            function openRecipeForm(rec) {
+            function openRecipeForm(id) {
+                const rec = id ? state.recipes.find(r => r.id === id) : null;
                 document.getElementById('recFormTitle').textContent = rec ? 'Edit Recipe' : 'New Recipe';
                 document.getElementById('rec-edit-id').value = rec ? rec.id : '';
                 document.getElementById('rec-name').value = rec ? rec.name : '';
                 document.getElementById('rec-desc').value = rec ? (rec.desc || '') : '';
+                document.getElementById('rec-delete-btn').style.display = rec ? '' : 'none';
                 const container = document.getElementById('recIngRows');
                 container.innerHTML = '';
                 if (rec && rec.ingredients.length) { rec.ingredients.forEach(ri => addIngRow(ri.ingId, ri.amount)); }
                 else { addIngRow(); }
-                document.getElementById('recipeForm').style.display = 'block';
-                document.getElementById('rec-name').focus();
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                setFormMode('view-recipes', 'recipeForm', 'recipeList', true);
+                if (!rec) document.getElementById('rec-name').focus();
             }
-            function closeRecipeForm() { document.getElementById('recipeForm').style.display = 'none'; }
+            function closeRecipeForm() {
+                setFormMode('view-recipes', 'recipeForm', 'recipeList', false);
+                renderRecipes();
+            }
+            function updateIngRowUnit(select) {
+                const ing = state.ingredients.find(i => i.id === parseInt(select.value));
+                select.classList.toggle('placeholder', !ing);
+                select.parentElement.querySelector('.ing-uom-label').textContent = ing ? ing.uom : '';
+            }
             function addIngRow(selectedIngId, amount) {
                 const container = document.getElementById('recIngRows');
                 const row = document.createElement('div');
-                row.className = 'ing-row';
+                row.className = 'ing-row rec-ing-row';
                 row.innerHTML = `
-    <select style="flex:3">${ingOptsHTML(selectedIngId)}</select>
-    <input type="number" placeholder="Amount" min="0" step="any" value="${amount !== undefined ? amount : ''}" style="flex:1;max-width:90px">
+    <select onchange="updateIngRowUnit(this)">${ingOptsHTML(selectedIngId)}</select>
+    <input type="number" placeholder="Amount" min="0" step="any" inputmode="decimal" value="${amount !== undefined ? amount : ''}">
+    <span class="ing-uom-label"></span>
     <button class="btn-danger" style="padding:4px 8px;flex-shrink:0" onclick="this.parentElement.remove()">✕</button>`;
-    container.appendChild(row);
+                container.appendChild(row);
+                updateIngRowUnit(row.querySelector('select'));
             }
             function saveRecipe() {
                 const name = document.getElementById('rec-name').value.trim();
@@ -625,12 +655,20 @@
                 } else {
                     state.recipes.push({ id: state.nextRecId++, name, desc, ingredients });
                 }
-                saveState(); closeRecipeForm(); renderRecipes();
+                saveState(); closeRecipeForm();
             }
-            function deleteRecipe(id) {
-                if (!confirm('Delete this recipe?')) return;
+            function deleteRecipe() {
+                const id = parseInt(document.getElementById('rec-edit-id').value);
+                const rec = state.recipes.find(r => r.id === id);
+                if (!rec) return;
+                const usedIn = state.menus.filter(m => m.recipes.some(item => item.recipeId === id));
+                const msg = usedIn.length
+                    ? `Delete "${rec.name}"?\n\nIt's used in ${usedIn.length} menu${usedIn.length !== 1 ? 's' : ''}: ${usedIn.map(m => m.name).join(', ')}. Deleting it removes it from ${usedIn.length !== 1 ? 'those menus' : 'that menu'}.\n\nThis can't be undone.`
+                    : `Delete "${rec.name}"?\n\nThis can't be undone.`;
+                if (!confirm(msg)) return;
                 state.recipes = state.recipes.filter(r => r.id !== id);
-                saveState(); renderRecipes();
+                usedIn.forEach(m => { m.recipes = m.recipes.filter(item => item.recipeId !== id); });
+                saveState(); closeRecipeForm();
             }
             function renderRecipes() {
                 const el = document.getElementById('recipeList');
@@ -639,27 +677,14 @@
                 }
                 el.innerHTML = state.recipes.map(rec => {
                     const cost = recipeIdealCost(rec);
-                    const ingLines = rec.ingredients.map(ri => {
-                        const ing = state.ingredients.find(i => i.id === ri.ingId);
-                        return ing ? `<div class="ing-row"><span style="flex:2;font-size:0.88rem">${ing.name}</span><span style="font-size:0.8rem;color:var(--text-muted);font-family:var(--mono)">${ri.amount} ${ing.uom}</span></div>` : '';
-                    }).join('');
-                    const safeRec = JSON.stringify(rec).replace(/"/g, '&quot;');
                     return `
-        <div class="card">
-        <div class="card-top">
-        <div class="card-info" onclick="toggleCard('rec-${rec.id}')">
+    <div class="card card-clickable" onclick="openRecipeForm(${rec.id})">
+      <div class="card-top">
+        <div class="card-info">
           <div class="card-title">${rec.name}</div>
           <div class="card-sub">$${cost.toFixed(2)} / batch &nbsp;·&nbsp; ${rec.ingredients.length} ingredient${rec.ingredients.length !== 1 ? 's' : ''}</div>
         </div>
-        <div class="card-actions">
-          <button class="btn-ghost btn-sm" onclick="openRecipeForm(JSON.parse(this.dataset.rec))" data-rec="${safeRec}">Edit</button>
-          <button class="btn-danger btn-sm" onclick="deleteRecipe(${rec.id})">✕</button>
-          <span class="caret" id="card-caret-rec-${rec.id}" onclick="toggleCard('rec-${rec.id}')">▶</span>
-        </div>
-        </div>
-        <div class="card-body" id="card-body-rec-${rec.id}">
-        ${rec.desc ? `<p style="font-size:0.83rem;color:var(--text-muted);margin-bottom:10px">${rec.desc}</p>` : ''}
-        ${ingLines}
+        <div class="card-chevron">›</div>
       </div>
     </div>`;
                 }).join('');
@@ -675,14 +700,17 @@
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
             function hideNewMenuForm() { document.getElementById('newMenuForm').style.display = 'none'; }
+            function menuRecipeRowHTML(selectedRecipeId) {
+                return `
+    <select style="flex:3;min-width:0" class="${selectedRecipeId ? '' : 'placeholder'}" onchange="this.classList.remove('placeholder')">${recipeOptsHTML(selectedRecipeId)}</select>
+    <button class="btn-danger" style="padding:4px 8px;flex-shrink:0" onclick="this.parentElement.remove()">✕</button>`;
+            }
             function addNewMenuRecipeRow() {
                 const container = document.getElementById('newMenuRecipeRows');
                 const row = document.createElement('div');
                 row.className = 'ing-row';
-                row.innerHTML = `
-    <select style="flex:3">${recipeOptsHTML()}</select>
-    <button class="btn-danger" style="padding:4px 8px;flex-shrink:0" onclick="this.parentElement.remove()">✕</button>`;
-    container.appendChild(row);
+                row.innerHTML = menuRecipeRowHTML();
+                container.appendChild(row);
             }
             function saveNewMenu() {
                 const name = document.getElementById('new-menu-name').value.trim();
@@ -731,6 +759,22 @@
                 const menu = state.menus.find(m => m.id === currentMenuId);
                 if (!menu) return;
                 document.getElementById('detail-title').textContent = menu.name;
+                document.getElementById('detail-menu-name').value = menu.name;
+                renderDetailStats(menu);
+                const list = document.getElementById('detail-recipe-list');
+                const rows = menu.recipes.map(item => {
+                    const rec = state.recipes.find(r => r.id === item.recipeId);
+                    if (!rec) return '';
+                    return `<div class="menu-rec-row">
+      <span class="menu-rec-name">${rec.name}</span>
+      <input class="qty-input" type="number" min="0" inputmode="numeric" value="${item.qty}" oninput="setMenuQty(${rec.id}, this.value)">
+      <span class="menu-rec-cost" id="mr-cost-${rec.id}">$${recipeActualCostPerUnit(rec, item.qty).toFixed(2)}</span>
+      <button class="btn-danger" style="padding:4px 8px" title="Remove from menu" onclick="removeMenuRecipe(${rec.id})">✕</button>
+    </div>`;
+                }).join('');
+                list.innerHTML = rows || '<div class="menu-empty">No recipes in this menu yet.</div>';
+            }
+            function renderDetailStats(menu) {
                 const trueCost = menuTrueCost(menu);
                 const totalBatches = menuTotalBatches(menu);
                 const avgCost = totalBatches > 0 ? trueCost / totalBatches : 0;
@@ -739,57 +783,58 @@
     <div class="detail-stat"><div class="detail-stat-val">$${trueCost.toFixed(2)}</div><div class="detail-stat-lbl">True Cost</div></div>
     <div class="detail-stat"><div class="detail-stat-val">$${avgCost.toFixed(2)}</div><div class="detail-stat-lbl">Avg / Batch</div></div>
     <div class="detail-stat"><div class="detail-stat-val">${menu.recipes.length}</div><div class="detail-stat-lbl">Recipes</div></div>`;
-    document.getElementById('detail-recipe-list').innerHTML = menu.recipes.map(item => {
-        const rec = state.recipes.find(r => r.id === item.recipeId);
-        if (!rec) return '';
-        const ideal = recipeIdealCost(rec);
-        return `<div class="ing-row">
-      <span style="flex:2;font-size:0.88rem;font-weight:500">${rec.name}</span>
-      <span style="font-size:0.8rem;color:var(--text-muted);font-family:var(--mono)">${item.qty} batch${item.qty !== 1 ? 'es' : ''} &nbsp;·&nbsp; $${ideal.toFixed(2)}/batch</span>
-    </div>`;
-    }).join('');
             }
-            function toggleDetailEdit() {
-                const panel = document.getElementById('detail-edit-panel');
-                const isOpen = panel.classList.contains('open');
-                if (!isOpen) {
-                    const menu = state.menus.find(m => m.id === currentMenuId);
-                    if (!menu) return;
-                    document.getElementById('detail-menu-name').value = menu.name;
-                    const container = document.getElementById('detail-menu-recipe-rows');
-                    container.innerHTML = '';
-                    menu.recipes.forEach(item => addDetailMenuRecipeRow(item.recipeId));
-                }
-                panel.classList.toggle('open');
-            }
-            function addDetailMenuRecipeRow(selectedRecipeId) {
-                const container = document.getElementById('detail-menu-recipe-rows');
-                const row = document.createElement('div');
-                row.className = 'ing-row';
-                row.innerHTML = `
-    <select style="flex:3">${recipeOptsHTML(selectedRecipeId)}</select>
-    <button class="btn-danger" style="padding:4px 8px;flex-shrink:0" onclick="this.parentElement.remove()">✕</button>`;
-    container.appendChild(row);
-            }
-            function saveDetailMenuEdit() {
-                const name = document.getElementById('detail-menu-name').value.trim();
-                if (!name) { alert('Menu name is required.'); return; }
-                const rows = document.querySelectorAll('#detail-menu-recipe-rows .ing-row');
-                const newRecipeIds = [];
-                rows.forEach(row => {
-                    const recipeId = parseInt(row.querySelector('select').value);
-                    if (recipeId) newRecipeIds.push(recipeId);
-                });
+            function renameCurrentMenu(input) {
                 const menu = state.menus.find(m => m.id === currentMenuId);
-                if (menu) {
-                    const existingQtys = {};
-                    menu.recipes.forEach(r => existingQtys[r.recipeId] = r.qty);
-                    menu.name = name;
-                    menu.recipes = newRecipeIds.map(recipeId => ({ recipeId, qty: existingQtys[recipeId] || 1 }));
-                }
+                if (!menu) return;
+                const name = input.value.trim();
+                if (!name) { input.value = menu.name; return; }
+                menu.name = name;
                 saveState();
-                document.getElementById('detail-edit-panel').classList.remove('open');
-                renderDetail();
+                document.getElementById('detail-title').textContent = name;
+            }
+            function setMenuQty(recipeId, val) {
+                const menu = state.menus.find(m => m.id === currentMenuId);
+                if (!menu) return;
+                const item = menu.recipes.find(r => r.recipeId === recipeId);
+                const rec = state.recipes.find(r => r.id === recipeId);
+                if (!item || !rec) return;
+                item.qty = Math.max(0, parseInt(val) || 0);
+                saveState();
+                document.getElementById('mr-cost-' + recipeId).textContent = '$' + recipeActualCostPerUnit(rec, item.qty).toFixed(2);
+                renderDetailStats(menu);
+            }
+            function removeMenuRecipe(recipeId) {
+                const menu = state.menus.find(m => m.id === currentMenuId);
+                if (!menu) return;
+                menu.recipes = menu.recipes.filter(r => r.recipeId !== recipeId);
+                saveState(); renderDetail();
+            }
+            function addMenuRecipePicker() {
+                const menu = state.menus.find(m => m.id === currentMenuId);
+                if (!menu) return;
+                const list = document.getElementById('detail-recipe-list');
+                if (list.querySelector('select.menu-rec-picker')) { list.querySelector('select.menu-rec-picker').focus(); return; }
+                const available = state.recipes.filter(r => !menu.recipes.some(item => item.recipeId === r.id));
+                if (!available.length) { alert(state.recipes.length ? 'Every recipe is already in this menu.' : 'Add a recipe on the Recipes tab first.'); return; }
+                const empty = list.querySelector('.menu-empty');
+                if (empty) empty.remove();
+                const row = document.createElement('div');
+                row.className = 'menu-rec-row';
+                row.innerHTML = `
+      <select class="menu-rec-picker placeholder" onchange="addRecipeToMenu(parseInt(this.value))">
+        <option value="" disabled selected>— Select a recipe —</option>
+        ${available.map(r => `<option value="${r.id}">${r.name}</option>`).join('')}
+      </select>
+      <button class="btn-danger" style="padding:4px 8px" title="Cancel" onclick="renderDetail()">✕</button>`;
+                list.appendChild(row);
+                row.querySelector('select').focus();
+            }
+            function addRecipeToMenu(recipeId) {
+                const menu = state.menus.find(m => m.id === currentMenuId);
+                if (!menu || !recipeId) return;
+                menu.recipes.push({ recipeId, qty: 1 });
+                saveState(); renderDetail();
             }
             function deleteCurrentMenu() {
                 const menu = state.menus.find(m => m.id === currentMenuId);
@@ -996,7 +1041,7 @@
     <div class="help-card">
       <h2>Menus</h2>
       <p>A menu is your plan for one event, like ${event}. Tap <strong>+ New Menu</strong>, name it and add the recipes you're making.</p>
-      <p>Tap a menu to see its totals. From there you can <strong>Open Estimator</strong>, <strong>Edit Menu</strong> or <strong>Delete</strong> it.</p>
+      <p>Tap a menu to see its recipes, with the number of batches and the cost per batch for each. You can change the batches, add a recipe with <strong>+ Add Recipe</strong>, remove one with <strong>✕</strong> or rename the menu. Changes save as you go. From there you can also <strong>Open Estimator</strong> or <strong>Delete</strong> the menu.</p>
     </div>
 
     <div class="help-card">
