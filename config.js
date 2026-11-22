@@ -17,6 +17,13 @@ window.VERTICAL_CONFIG = {
     'accent2-light': '#DFF0DF',
   },
 
+  help: {
+    event: 'Saturday’s farmers market',
+    priceNote: 'at typical US grocery prices',
+    ingExample: { pkg: 'a 5 lb bag of all-purpose flour (about 18.9 cups) for $1.97', uom: 'cup', size: 18.9, price: 1.97 },
+    costExample: { name: 'unsalted butter', uom: 'tbsp', amount: 2, size: 32, price: 5.98 },
+  },
+
   emptyIcons: {
     ingredients: '🧁',
     recipes: '📋',
