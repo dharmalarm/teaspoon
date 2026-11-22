@@ -161,6 +161,11 @@
                         .help-card li { margin-bottom: 4px; }
                         .help-example { background: var(--surface2); border-radius: 8px; padding: 10px 14px; margin: 10px 0; font-family: var(--mono); font-size: 0.8rem; line-height: 1.7; }
                         .help-tip { color: var(--text-muted); font-size: 0.84rem; }
+                        .help-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 10px 0; }
+                        .help-compare > div { border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; }
+                        .help-compare h3 { font-size: 0.95rem; color: var(--accent); margin-bottom: 4px; }
+                        .help-compare p { margin-bottom: 6px; }
+                        @media (max-width: 420px) { .help-compare { grid-template-columns: 1fr; } }
                         .empty { text-align: center; padding: 48px 24px; color: var(--text-muted); }
                         .empty-icon { font-size: 2.5rem; margin-bottom: 12px; opacity: 0.4; }
                         .empty p { font-size: 0.88rem; margin-top: 6px; }
@@ -243,7 +248,7 @@
                     <div class="card menu-card">
                         <div class="form-group"><label>Menu Name</label><input id="detail-menu-name" type="text" onchange="renameCurrentMenu(this)"></div>
                         <div class="divider"></div>
-                        <div class="menu-rec-row menu-rec-head"><span>Recipe</span><span>Batches</span><span>Cost / batch</span><span></span></div>
+                        <div class="menu-rec-row menu-rec-head"><span>Recipe</span><span>Batches</span><span>Purchase / batch</span><span></span></div>
                         <div id="detail-recipe-list"></div>
                         <button class="btn btn-secondary btn-sm add-row-btn" onclick="addMenuRecipePicker()">+ Add Recipe</button>
                     </div>
@@ -746,7 +751,7 @@
     </div>
     <div class="menu-tile-stats">
     <div class="menu-stat"><div class="menu-stat-val">${totalBatches}</div><div class="menu-stat-lbl">Total Batches</div></div>
-    <div class="menu-stat"><div class="menu-stat-val">$${trueCost.toFixed(2)}</div><div class="menu-stat-lbl">True Cost</div></div>
+    <div class="menu-stat"><div class="menu-stat-val">$${trueCost.toFixed(2)}</div><div class="menu-stat-lbl">Purchase Cost</div></div>
     <div class="menu-stat"><div class="menu-stat-val">$${avgCost.toFixed(2)}</div><div class="menu-stat-lbl">Avg / Batch</div></div>
     <div class="menu-stat"><div class="menu-stat-val">${menu.recipes.length}</div><div class="menu-stat-lbl">Recipes</div></div>
     </div>
@@ -781,7 +786,7 @@
                 const avgCost = totalBatches > 0 ? trueCost / totalBatches : 0;
                 document.getElementById('detail-stats').innerHTML = `
     <div class="detail-stat"><div class="detail-stat-val">${totalBatches}</div><div class="detail-stat-lbl">Total Batches</div></div>
-    <div class="detail-stat"><div class="detail-stat-val">$${trueCost.toFixed(2)}</div><div class="detail-stat-lbl">True Cost</div></div>
+    <div class="detail-stat"><div class="detail-stat-val">$${trueCost.toFixed(2)}</div><div class="detail-stat-lbl">Purchase Cost</div></div>
     <div class="detail-stat"><div class="detail-stat-val">$${avgCost.toFixed(2)}</div><div class="detail-stat-lbl">Avg / Batch</div></div>
     <div class="detail-stat"><div class="detail-stat-val">${menu.recipes.length}</div><div class="detail-stat-lbl">Recipes</div></div>`;
             }
@@ -924,14 +929,14 @@
     document.getElementById('estimatorContent').innerHTML = `
     <div class="summary-grid">
       <div class="summary-box"><div class="val" id="summ-total-units">${totalUnits}</div><div class="lbl">Total Batches</div></div>
-      <div class="summary-box"><div class="val" id="summ-ing-cost">$${totalIngCost.toFixed(2)}</div><div class="lbl">Recipe Cost</div></div>
-      <div class="summary-box"><div class="val" id="summ-unit-cost">$${totalUnitCost.toFixed(2)}</div><div class="lbl">True Cost</div></div>
+      <div class="summary-box"><div class="val" id="summ-ing-cost">$${totalIngCost.toFixed(2)}</div><div class="lbl">Usage Cost</div></div>
+      <div class="summary-box"><div class="val" id="summ-unit-cost">$${totalUnitCost.toFixed(2)}</div><div class="lbl">Purchase Cost</div></div>
       <div class="summary-box"><div class="val" id="summ-avg">${totalUnits ? '$' + (totalUnitCost / totalUnits).toFixed(2) : '—'}</div><div class="lbl">Avg / Batch</div></div>
     </div>
     <div class="card" style="margin-bottom:16px">
-      <div style="padding:12px 10px"><span class="section-label">By Recipe</span> <span style="font-size:0.75rem;color:var(--text-muted);margin-left:8px">Edit batches — true cost updates as you cross package boundaries</span></div>
+      <div style="padding:12px 10px"><span class="section-label">By Recipe</span> <span style="font-size:0.75rem;color:var(--text-muted);margin-left:8px">Edit batches — purchase cost updates as you cross package boundaries</span></div>
       <div class="table-scroll"><table class="est-table">
-        <thead><tr><th>Recipe</th><th style="text-align:right">Recipe Cost</th><th style="text-align:right">Batches</th><th style="text-align:right">True Cost/Batch</th><th style="text-align:right">Total</th></tr></thead>
+        <thead><tr><th>Recipe</th><th style="text-align:right">Usage Cost</th><th style="text-align:right">Batches</th><th style="text-align:right">Purchase Cost/Batch</th><th style="text-align:right">Total</th></tr></thead>
         <tbody>${recipeRows}</tbody>
         <tfoot id="rec-breakdown-foot"><tr><td>Total</td><td></td><td></td><td></td><td class="num">$${totalUnitCost.toFixed(2)}</td></tr></tfoot>
       </table></div>
@@ -939,7 +944,7 @@
     <div class="card">
       <div style="padding:12px 10px"><span class="section-label">By Ingredient</span></div>
       <div class="table-scroll"><table class="est-table">
-        <thead><tr><th>Ingredient</th><th style="text-align:right">Consumed</th><th style="text-align:right">Pkgs Opened</th><th style="text-align:right">Recipe $</th><th style="text-align:right">True $</th></tr></thead>
+        <thead><tr><th>Ingredient</th><th style="text-align:right">Consumed</th><th style="text-align:right">Pkgs Opened</th><th style="text-align:right">Usage $</th><th style="text-align:right">Purchase $</th></tr></thead>
         <tbody id="ing-breakdown-body">${ingRows}</tbody>
         <tfoot id="ing-breakdown-foot"><tr><td>Total</td><td></td><td></td><td class="num">$${totalIngCost.toFixed(2)}</td><td class="num">$${totalUnitCost.toFixed(2)}</td></tr></tfoot>
       </table></div>
@@ -1036,23 +1041,24 @@
         <li>Amounts are for <strong>one batch</strong>.</li>
         <li>Each amount is in that ingredient's unit (shown next to its name).</li>
       </ul>
-      <p>The cost shown on a recipe is its <strong>Recipe Cost</strong>. See the Estimator section below for what that means.</p>
+      <p>The cost shown on a recipe is its <strong>Usage Cost</strong>. See the Estimator section below for what that means.</p>
     </div>
 
     <div class="help-card">
       <h2>Menus</h2>
       <p>A menu is your plan for one event, like ${event}. Tap <strong>+ New Menu</strong>, name it and add the recipes you're making.</p>
-      <p>Tap a menu to see its recipes, with the number of batches and the cost per batch for each. You can change the batches, add a recipe with <strong>+ Add Recipe</strong>, remove one with <strong>✕</strong> or rename the menu. Changes save as you go. From there you can also <strong>Open Estimator</strong> or <strong>Delete</strong> the menu.</p>
+      <p>Tap a menu to see its recipes, with the number of batches and the purchase cost per batch for each. You can change the batches, add a recipe with <strong>+ Add Recipe</strong>, remove one with <strong>✕</strong> or rename the menu. Changes save as you go. From there you can also <strong>Open Estimator</strong> or <strong>Delete</strong> the menu.</p>
     </div>
 
     <div class="help-card">
       <h2>The Estimator</h2>
-      <p>This is where you find out what your menu really costs. It shows two numbers for each recipe:</p>
-      <ul>
-        <li><strong>Recipe Cost</strong>: what one batch costs if you only paid for exactly what you use.</li>
-        <li><strong>True Cost</strong>: what one batch costs once you count the whole packages you have to buy. This is the real number.</li>
-      </ul>
-      <div class="help-example">Example: ${ce.name}<br>One batch uses ${ce.amount} ${ce.uom}. A package is ${ce.size} ${ce.uom} for ${money(ce.price)}.<br>Recipe Cost: ${ce.amount} ÷ ${ce.size} × ${money(ce.price)} = <strong>${money(recipeCost)}</strong><br>True Cost for 1 batch: you have to buy the whole package, so <strong>${money(ce.price)}</strong><br>True Cost for ${fullBatches} batches: they use up exactly one package, so <strong>${money(ce.price / fullBatches)}</strong> each</div>
+      <p>This is where you find out what your menu really costs. Every recipe gets two costs, and the difference between them matters:</p>
+      <div class="help-compare">
+        <div><h3>Usage Cost</h3><p>Only what goes into the recipe, as if you could buy exactly that much.</p><p class="help-tip">Stays the same no matter how many batches you make.</p></div>
+        <div><h3>Purchase Cost</h3><p>What you actually pay at the store, because you have to buy whole packages.</p><p class="help-tip">Use this one to plan your spending. Per batch, it drops as you make more batches.</p></div>
+      </div>
+      <div class="help-example">Example: ${ce.name}<br>One batch uses ${ce.amount} ${ce.uom}. A package is ${ce.size} ${ce.uom} for ${money(ce.price)}.<br>Usage Cost: ${ce.amount} ÷ ${ce.size} × ${money(ce.price)} = <strong>${money(recipeCost)}</strong> per batch<br>Purchase Cost for 1 batch: you have to buy the whole package, so <strong>${money(ce.price)}</strong><br>Purchase Cost for ${fullBatches} batches: they use up exactly one package, so <strong>${money(ce.price / fullBatches)}</strong> per batch</div>
+      <p><strong>The difference is your leftovers.</strong> Purchase Cost minus Usage Cost is the value of the ingredients left over in packages you opened. They aren't wasted, but you've paid for them now.</p>
       <p>Change the number in the <strong>Batches</strong> column and everything updates right away.</p>
       <p><strong>Sweet spot hints.</strong> Sometimes making a few more batches lowers your cost per batch, because you use up packages you're already buying. When that saves enough to matter, you'll see a hint under the recipe like <em>"↓ Make 4 batches instead and save $0.85/batch."</em> A <em>"✓ Good quantity"</em> hint means you're already in a good spot.</p>
       <p>The <strong>By Ingredient</strong> table shows how much of each ingredient the whole menu uses and how many packages you'll open.</p>
