@@ -127,6 +127,7 @@
                         .shop-item:last-child { border-bottom: none; }
                         .shop-qty { font-family: var(--mono); font-size: 0.82rem; color: var(--accent); font-weight: 500; white-space: nowrap; margin-left: 12px; }
                         
+                        .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
                         .add-row-btn { margin-top: 10px; }
                         .menu-card { padding: 16px; }
                         .menu-rec-row { display: grid; grid-template-columns: minmax(0,1fr) 64px 84px 30px; gap: 8px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--surface2); }
@@ -929,19 +930,19 @@
     </div>
     <div class="card" style="margin-bottom:16px">
       <div style="padding:12px 10px"><span class="section-label">By Recipe</span> <span style="font-size:0.75rem;color:var(--text-muted);margin-left:8px">Edit batches — true cost updates as you cross package boundaries</span></div>
-      <table class="est-table">
+      <div class="table-scroll"><table class="est-table">
         <thead><tr><th>Recipe</th><th style="text-align:right">Recipe Cost</th><th style="text-align:right">Batches</th><th style="text-align:right">True Cost/Batch</th><th style="text-align:right">Total</th></tr></thead>
         <tbody>${recipeRows}</tbody>
         <tfoot id="rec-breakdown-foot"><tr><td>Total</td><td></td><td></td><td></td><td class="num">$${totalUnitCost.toFixed(2)}</td></tr></tfoot>
-      </table>
+      </table></div>
     </div>
     <div class="card">
       <div style="padding:12px 10px"><span class="section-label">By Ingredient</span></div>
-      <table class="est-table">
+      <div class="table-scroll"><table class="est-table">
         <thead><tr><th>Ingredient</th><th style="text-align:right">Consumed</th><th style="text-align:right">Pkgs Opened</th><th style="text-align:right">Recipe $</th><th style="text-align:right">True $</th></tr></thead>
         <tbody id="ing-breakdown-body">${ingRows}</tbody>
         <tfoot id="ing-breakdown-foot"><tr><td>Total</td><td></td><td></td><td class="num">$${totalIngCost.toFixed(2)}</td><td class="num">$${totalUnitCost.toFixed(2)}</td></tr></tfoot>
-      </table>
+      </table></div>
     </div>`;
             }
             
