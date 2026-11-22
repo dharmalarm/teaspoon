@@ -157,7 +157,12 @@
         
         <div class="storage-bar">
             <span>💾 <strong>Auto-saving</strong> to this browser</span>
-            <button class="btn-ghost btn-sm" onclick="clearAllData()" style="font-size:0.72rem;padding:3px 8px;">Reset to defaults</button>
+            <span style="display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end">
+                <button class="btn-ghost btn-sm" onclick="exportData()" style="font-size:0.72rem;padding:3px 8px;">Back up</button>
+                <button class="btn-ghost btn-sm" onclick="document.getElementById('import-file').click()" style="font-size:0.72rem;padding:3px 8px;">Restore</button>
+                <button class="btn-ghost btn-sm" onclick="clearAllData()" style="font-size:0.72rem;padding:3px 8px;">Reset to defaults</button>
+            </span>
+            <input type="file" id="import-file" accept=".json,application/json" style="display:none" onchange="importData(this)">
         </div>
         
         <nav>
@@ -329,7 +334,54 @@
                 try { const s = localStorage.getItem(STORAGE_KEY); if (s) return JSON.parse(s); } catch(e) {}
                 return JSON.parse(JSON.stringify(cfg.defaultState));
             }
-            function saveState() { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {} }
+            let saveWarned = false;
+            function saveState() {
+                try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+                catch(e) {
+                    if (!saveWarned) { saveWarned = true; alert('Your changes could not be saved in this browser. Tap "Back up" to keep a copy of your data.'); }
+                }
+            }
+
+            // ── BACKUP / RESTORE ──────────────────────────────────
+            function exportData() {
+                const backup = { app: cfg.appName, storageKey: STORAGE_KEY, exportedAt: new Date().toISOString(), state: state };
+                const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+                const d = new Date();
+                const stamp = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = cfg.appName.toLowerCase() + '-backup-' + stamp + '.json';
+                document.body.appendChild(a); a.click(); a.remove();
+                setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+            }
+            function importData(input) {
+                const file = input.files && input.files[0];
+                input.value = '';
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = () => {
+                    let data;
+                    try { data = JSON.parse(reader.result); } catch(e) { alert('That file isn’t a backup this app can read.'); return; }
+                    const s = data && data.state ? data.state : data;
+                    if (!s || !Array.isArray(s.ingredients) || !Array.isArray(s.recipes) || !Array.isArray(s.menus)) {
+                        alert('That file isn’t a backup this app can read.'); return;
+                    }
+                    const when = data.exportedAt ? ' from ' + new Date(data.exportedAt).toLocaleString() : '';
+                    if (!confirm('Restore the backup' + when + '?\n\n' + s.ingredients.length + ' ingredients, ' + s.recipes.length + ' recipes, ' + s.menus.length + ' menus.\n\nThis replaces everything currently in the app.')) return;
+                    const maxId = arr => arr.reduce((m, x) => Math.max(m, Number(x.id) || 0), 0);
+                    s.nextIngId = Math.max(s.nextIngId || 0, maxId(s.ingredients) + 1);
+                    s.nextRecId = Math.max(s.nextRecId || 0, maxId(s.recipes) + 1);
+                    s.nextMenuId = Math.max(s.nextMenuId || 0, maxId(s.menus) + 1);
+                    state = s;
+                    saveState();
+                    showView('menus', document.querySelector('.nav-btn'));
+                    alert('Backup restored.');
+                };
+                reader.readAsText(file);
+            }
+
+            // Ask the browser not to clear this site's data on its own (honored by Chrome/Firefox; ignored elsewhere)
+            if (navigator.storage && navigator.storage.persist) { navigator.storage.persist().catch(() => {}); }
             function clearAllData() {
                 if (!confirm('Reset everything to defaults? Your custom data will be lost.')) return;
                 localStorage.removeItem(STORAGE_KEY);
