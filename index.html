@@ -475,34 +475,50 @@
                     return sum + (ing ? costPerUom(ing) * ri.amount : 0);
                 }, 0);
             }
-            function recipeActualCostPerUnit(recipe, qty) {
-                if (!qty || qty <= 0) return 0;
-                let total = 0;
-                recipe.ingredients.forEach(ri => {
-                    const ing = state.ingredients.find(i => i.id === ri.ingId);
-                    if (!ing) return;
-                    total += Math.ceil((ri.amount * qty) / ing.size) * ing.price;
+            // Packages are pooled across the whole menu: each ingredient is rounded up
+            // to whole packages once, then that cost is split back to recipes by share of use.
+            // qtyOverrides ({recipeId: qty}) lets the sweet-spot scan test a qty without saving it.
+            function itemQty(item, qtyOverrides) {
+                return (qtyOverrides && qtyOverrides[item.recipeId] !== undefined) ? qtyOverrides[item.recipeId] : item.qty;
+            }
+            function menuRecipePurchaseTotals(menu, qtyOverrides) {
+                const ingUsage = calcIngUsage(menu, qtyOverrides);
+                const totals = {};
+                menu.recipes.forEach(item => {
+                    const rec = state.recipes.find(r => r.id === item.recipeId);
+                    if (!rec) return;
+                    const qty = itemQty(item, qtyOverrides);
+                    let total = 0;
+                    rec.ingredients.forEach(ri => {
+                        const u = ingUsage[ri.ingId];
+                        if (!u || u.consumed <= 0) return;
+                        total += (ri.amount * qty / u.consumed) * u.unitsCost;
+                    });
+                    totals[item.recipeId] = total;
                 });
-                return total / qty;
+                return totals;
+            }
+            function recipeActualCostPerUnit(menu, recipeId, qty, qtyOverrides) {
+                if (!qty || qty <= 0) return 0;
+                const totals = menuRecipePurchaseTotals(menu, qtyOverrides);
+                return (totals[recipeId] || 0) / qty;
             }
             function menuTrueCost(menu) {
-                return menu.recipes.reduce((sum, item) => {
-                    const rec = state.recipes.find(r => r.id === item.recipeId);
-                    return sum + (rec ? recipeActualCostPerUnit(rec, item.qty) * item.qty : 0);
-                }, 0);
+                return Object.values(calcIngUsage(menu)).reduce((s, u) => s + u.unitsCost, 0);
             }
             function menuTotalBatches(menu) { return menu.recipes.reduce((s, i) => s + i.qty, 0); }
-            function calcIngUsage(menu) {
+            function calcIngUsage(menu, qtyOverrides) {
                 const ingUsage = {};
                 menu.recipes.forEach(item => {
                     const rec = state.recipes.find(r => r.id === item.recipeId);
                     if (!rec) return;
+                    const qty = itemQty(item, qtyOverrides);
                     rec.ingredients.forEach(ri => {
                         const ing = state.ingredients.find(i => i.id === ri.ingId);
                         if (!ing) return;
                         if (!ingUsage[ri.ingId]) ingUsage[ri.ingId] = { ing, consumed: 0, cost: 0 };
-                        ingUsage[ri.ingId].consumed += ri.amount * item.qty;
-                        ingUsage[ri.ingId].cost += costPerUom(ing) * ri.amount * item.qty;
+                        ingUsage[ri.ingId].consumed += ri.amount * qty;
+                        ingUsage[ri.ingId].cost += costPerUom(ing) * ri.amount * qty;
                     });
                 });
                 Object.values(ingUsage).forEach(u => {
@@ -511,19 +527,20 @@
                 });
                 return ingUsage;
             }
-            function sweetSpotHint(recipe, currentQty) {
+            function sweetSpotHint(menu, recipe, currentQty) {
                 if (!currentQty || currentQty <= 0) return '';
-                const currentCost = recipeActualCostPerUnit(recipe, currentQty);
+                const costAt = q => recipeActualCostPerUnit(menu, recipe.id, q, { [recipe.id]: q });
+                const currentCost = costAt(currentQty);
                 if (currentCost === 0) return '';
                 const scanTo = currentQty * 3;
                 let bestQty = null, bestCost = currentCost;
                 for (let q = currentQty + 1; q <= scanTo; q++) {
-                    const c = recipeActualCostPerUnit(recipe, q);
+                    const c = costAt(q);
                     if (c < bestCost) { bestCost = c; bestQty = q; break; }
                 }
                 if (!bestQty || (currentCost - bestCost) / currentCost < 0.10) {
                     if (currentQty === 1) return `<div class="sweet-spot optimal">\u2713 Good quantity</div>`;
-                    const prevCost = recipeActualCostPerUnit(recipe, currentQty - 1);
+                    const prevCost = costAt(currentQty - 1);
                     if (prevCost > currentCost) return `<div class="sweet-spot optimal">\u2713 You're at a good quantity</div>`;
                     return '';
                 }
@@ -768,13 +785,15 @@
                 document.getElementById('detail-menu-name').value = menu.name;
                 renderDetailStats(menu);
                 const list = document.getElementById('detail-recipe-list');
+                const recTotals = menuRecipePurchaseTotals(menu);
                 const rows = menu.recipes.map(item => {
                     const rec = state.recipes.find(r => r.id === item.recipeId);
                     if (!rec) return '';
+                    const perBatch = item.qty > 0 ? (recTotals[item.recipeId] || 0) / item.qty : 0;
                     return `<div class="menu-rec-row">
       <span class="menu-rec-name">${rec.name}</span>
       <input class="qty-input" type="number" min="0" inputmode="numeric" value="${item.qty}" oninput="setMenuQty(${rec.id}, this.value)">
-      <span class="menu-rec-cost" id="mr-cost-${rec.id}">$${recipeActualCostPerUnit(rec, item.qty).toFixed(2)}</span>
+      <span class="menu-rec-cost" id="mr-cost-${rec.id}">$${perBatch.toFixed(2)}</span>
       <button class="btn-danger" style="padding:4px 8px" title="Remove from menu" onclick="removeMenuRecipe(${rec.id})">✕</button>
     </div>`;
                 }).join('');
@@ -807,7 +826,12 @@
                 if (!item || !rec) return;
                 item.qty = Math.max(0, parseInt(val) || 0);
                 saveState();
-                document.getElementById('mr-cost-' + recipeId).textContent = '$' + recipeActualCostPerUnit(rec, item.qty).toFixed(2);
+                // Shared packages mean one recipe's batches can shift every recipe's cost.
+                const recTotals = menuRecipePurchaseTotals(menu);
+                menu.recipes.forEach(it => {
+                    const el = document.getElementById('mr-cost-' + it.recipeId);
+                    if (el) el.textContent = '$' + (it.qty > 0 ? (recTotals[it.recipeId] || 0) / it.qty : 0).toFixed(2);
+                });
                 renderDetailStats(menu);
             }
             function removeMenuRecipe(recipeId) {
@@ -873,15 +897,17 @@
                 setText('summ-ing-cost', '$' + totalIngCost.toFixed(2));
                 setText('summ-unit-cost', '$' + totalUnitCost.toFixed(2));
                 setText('summ-avg', totalUnits ? '$' + (totalUnitCost / totalUnits).toFixed(2) : '—');
+                const recTotals = menuRecipePurchaseTotals(menu);
                 menu.recipes.forEach(item => {
                     const rec = state.recipes.find(r => r.id === item.recipeId);
                     if (!rec) return;
                     const ideal = recipeIdealCost(rec);
-                    const actual = recipeActualCostPerUnit(rec, item.qty);
+                    const recTotal = recTotals[item.recipeId] || 0;
+                    const actual = item.qty > 0 ? recTotal / item.qty : 0;
                     setText(`est-actual-${item.recipeId}`, '$' + actual.toFixed(2), actual < ideal ? 'cost-better' : '');
-                    setText(`est-total-${item.recipeId}`, '$' + (actual * item.qty).toFixed(2));
+                    setText(`est-total-${item.recipeId}`, '$' + recTotal.toFixed(2));
                     const hintEl = document.getElementById(`est-hint-${item.recipeId}`);
-                    if (hintEl) hintEl.innerHTML = sweetSpotHint(rec, item.qty);
+                    if (hintEl) hintEl.innerHTML = sweetSpotHint(menu, rec, item.qty);
                 });
                 const tbody = document.getElementById('ing-breakdown-body');
                 const tfoot = document.getElementById('ing-breakdown-foot');
@@ -902,15 +928,16 @@
                 const totalIngCost = Object.values(ingUsage).reduce((s, u) => s + u.cost, 0);
                 const totalUnitCost = Object.values(ingUsage).reduce((s, u) => s + u.unitsCost, 0);
                 const totalUnits = menu.recipes.reduce((s, i) => s + i.qty, 0);
+                const recTotals = menuRecipePurchaseTotals(menu);
                 const recipeRows = menu.recipes.map(item => {
                     const rec = state.recipes.find(r => r.id === item.recipeId);
                     if (!rec) return '';
                     const ideal = recipeIdealCost(rec);
-                    const actual = recipeActualCostPerUnit(rec, item.qty);
+                    const actual = item.qty > 0 ? (recTotals[item.recipeId] || 0) / item.qty : 0;
                     return `<tr>
       <td>
         <div>${rec.name}</div>
-        <div id="est-hint-${rec.id}">${sweetSpotHint(rec, item.qty)}</div>
+        <div id="est-hint-${rec.id}">${sweetSpotHint(menu, rec, item.qty)}</div>
       </td>
       <td class="num">$${ideal.toFixed(2)}</td>
       <td class="num"><input class="qty-input" type="number" min="0" value="${item.qty}" oninput="updateQty(${menu.id}, ${rec.id}, this.value)"></td>
@@ -1059,6 +1086,7 @@
       </div>
       <div class="help-example">Example: ${ce.name}<br>One batch uses ${ce.amount} ${ce.uom}. A package is ${ce.size} ${ce.uom} for ${money(ce.price)}.<br>Usage Cost: ${ce.amount} ÷ ${ce.size} × ${money(ce.price)} = <strong>${money(recipeCost)}</strong> per batch<br>Purchase Cost for 1 batch: you have to buy the whole package, so <strong>${money(ce.price)}</strong><br>Purchase Cost for ${fullBatches} batches: they use up exactly one package, so <strong>${money(ce.price / fullBatches)}</strong> per batch</div>
       <p><strong>The difference is your leftovers.</strong> Purchase Cost minus Usage Cost is the value of the ingredients left over in packages you opened. They aren't wasted, but you've paid for them now.</p>
+      <p><strong>Shared ingredients count once.</strong> If two recipes on a menu both use flour, ${app} adds up the flour for the whole menu and buys whole packages only once. Each recipe's Purchase Cost is its share of those packages, based on how much it uses. That means changing the batches of one recipe can change the Purchase Cost of another recipe that shares an ingredient with it.</p>
       <p>Change the number in the <strong>Batches</strong> column and everything updates right away.</p>
       <p><strong>Sweet spot hints.</strong> Sometimes making a few more batches lowers your cost per batch, because you use up packages you're already buying. When that saves enough to matter, you'll see a hint under the recipe like <em>"↓ Make 4 batches instead and save $0.85/batch."</em> A <em>"✓ Good quantity"</em> hint means you're already in a good spot.</p>
       <p>The <strong>By Ingredient</strong> table shows how much of each ingredient the whole menu uses and how many packages you'll open.</p>
