@@ -754,8 +754,6 @@
                 }
                 el.innerHTML = `<div class="menu-grid">${state.menus.map(menu => {
       const trueCost = menuTrueCost(menu);
-      const totalBatches = menuTotalBatches(menu);
-      const avgCost = totalBatches > 0 ? trueCost / totalBatches : 0;
       const recipeNames = menu.recipes.map(item => {
       const rec = state.recipes.find(r => r.id === item.recipeId);
       return rec ? `${rec.name} \u00D7${item.qty}` : '';
@@ -767,10 +765,8 @@
     <div class="menu-tile-arrow">›</div>
     </div>
     <div class="menu-tile-stats">
-    <div class="menu-stat"><div class="menu-stat-val">${totalBatches}</div><div class="menu-stat-lbl">Total Batches</div></div>
-    <div class="menu-stat"><div class="menu-stat-val">$${trueCost.toFixed(2)}</div><div class="menu-stat-lbl">Purchase Cost</div></div>
-    <div class="menu-stat"><div class="menu-stat-val">$${avgCost.toFixed(2)}</div><div class="menu-stat-lbl">Avg / Batch</div></div>
     <div class="menu-stat"><div class="menu-stat-val">${menu.recipes.length}</div><div class="menu-stat-lbl">Recipes</div></div>
+    <div class="menu-stat"><div class="menu-stat-val">$${trueCost.toFixed(2)}</div><div class="menu-stat-lbl">Purchase Cost</div></div>
     </div>
     <div class="menu-tile-recipes">${recipeNames}</div>
     </div>`;
@@ -801,13 +797,9 @@
             }
             function renderDetailStats(menu) {
                 const trueCost = menuTrueCost(menu);
-                const totalBatches = menuTotalBatches(menu);
-                const avgCost = totalBatches > 0 ? trueCost / totalBatches : 0;
                 document.getElementById('detail-stats').innerHTML = `
-    <div class="detail-stat"><div class="detail-stat-val">${totalBatches}</div><div class="detail-stat-lbl">Total Batches</div></div>
-    <div class="detail-stat"><div class="detail-stat-val">$${trueCost.toFixed(2)}</div><div class="detail-stat-lbl">Purchase Cost</div></div>
-    <div class="detail-stat"><div class="detail-stat-val">$${avgCost.toFixed(2)}</div><div class="detail-stat-lbl">Avg / Batch</div></div>
-    <div class="detail-stat"><div class="detail-stat-val">${menu.recipes.length}</div><div class="detail-stat-lbl">Recipes</div></div>`;
+    <div class="detail-stat"><div class="detail-stat-val">${menu.recipes.length}</div><div class="detail-stat-lbl">Recipes</div></div>
+    <div class="detail-stat"><div class="detail-stat-val">$${trueCost.toFixed(2)}</div><div class="detail-stat-lbl">Purchase Cost</div></div>`;
             }
             function renameCurrentMenu(input) {
                 const menu = state.menus.find(m => m.id === currentMenuId);
@@ -892,11 +884,8 @@
                 const ingUsage = calcIngUsage(menu);
                 const totalIngCost = Object.values(ingUsage).reduce((s, u) => s + u.cost, 0);
                 const totalUnitCost = Object.values(ingUsage).reduce((s, u) => s + u.unitsCost, 0);
-                const totalUnits = menu.recipes.reduce((s, i) => s + i.qty, 0);
-                setText('summ-total-units', totalUnits);
                 setText('summ-ing-cost', '$' + totalIngCost.toFixed(2));
                 setText('summ-unit-cost', '$' + totalUnitCost.toFixed(2));
-                setText('summ-avg', totalUnits ? '$' + (totalUnitCost / totalUnits).toFixed(2) : '—');
                 const recTotals = menuRecipePurchaseTotals(menu);
                 menu.recipes.forEach(item => {
                     const rec = state.recipes.find(r => r.id === item.recipeId);
@@ -927,7 +916,6 @@
                 const ingUsage = calcIngUsage(menu);
                 const totalIngCost = Object.values(ingUsage).reduce((s, u) => s + u.cost, 0);
                 const totalUnitCost = Object.values(ingUsage).reduce((s, u) => s + u.unitsCost, 0);
-                const totalUnits = menu.recipes.reduce((s, i) => s + i.qty, 0);
                 const recTotals = menuRecipePurchaseTotals(menu);
                 const recipeRows = menu.recipes.map(item => {
                     const rec = state.recipes.find(r => r.id === item.recipeId);
@@ -955,10 +943,8 @@
     </tr>`).join('');
     document.getElementById('estimatorContent').innerHTML = `
     <div class="summary-grid">
-      <div class="summary-box"><div class="val" id="summ-total-units">${totalUnits}</div><div class="lbl">Total Batches</div></div>
       <div class="summary-box"><div class="val" id="summ-ing-cost">$${totalIngCost.toFixed(2)}</div><div class="lbl">Usage Cost</div></div>
       <div class="summary-box"><div class="val" id="summ-unit-cost">$${totalUnitCost.toFixed(2)}</div><div class="lbl">Purchase Cost</div></div>
-      <div class="summary-box"><div class="val" id="summ-avg">${totalUnits ? '$' + (totalUnitCost / totalUnits).toFixed(2) : '—'}</div><div class="lbl">Avg / Batch</div></div>
     </div>
     <div class="card" style="margin-bottom:16px">
       <div style="padding:12px 10px"><span class="section-label">By Recipe</span> <span style="font-size:0.75rem;color:var(--text-muted);margin-left:8px">Edit batches — purchase cost updates as you cross package boundaries</span></div>
