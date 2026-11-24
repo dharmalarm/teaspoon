@@ -85,10 +85,8 @@
                         .detail-stat { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
                         .detail-stat-val { font-family: var(--serif); font-size: 1.5rem; color: var(--accent); }
                         .detail-stat-lbl { font-size: 0.68rem; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-muted); margin-top: 2px; }
+                        .detail-spend { grid-column: 1 / -1; font-size: 0.82rem; color: var(--text-muted); }
                         .detail-actions { display: flex; gap: 10px; margin-bottom: 24px; flex-wrap: wrap; }
-                        
-                        .estimator-back { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; }
-                        .estimator-menu-name { font-family: var(--serif); font-size: 1.6rem; color: var(--text); }
                         
                         .form-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 16px; }
                         .form-panel h3 { font-family: var(--serif); font-size: 1.1rem; margin-bottom: 16px; color: var(--text); }
@@ -110,15 +108,7 @@
                         .est-table .num { font-family: var(--mono); text-align: right; font-size: 0.83rem; }
                         .est-table tfoot td { font-weight: 600; background: var(--surface2); border-top: 2px solid var(--border); }
                         .qty-input { width: 65px; text-align: center; font-family: var(--mono); font-size: 0.88rem; padding: 5px 6px; }
-                        .cost-better { color: var(--accent2); font-weight: 600; }
-                        .sweet-spot { font-size: 0.75rem; margin-top: 4px; padding: 3px 8px; border-radius: 4px; display: inline-block; }
-                        .sweet-spot.hint { background: #FFF4E0; color: #8B5C00; border: 1px solid #F0D080; }
-                        .sweet-spot.optimal { background: var(--accent2-light); color: var(--accent2); border: 1px solid #A8D8A8; }
                         
-                        .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 20px; }
-                        .summary-box { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px; text-align: center; }
-                        .summary-box .val { font-family: var(--serif); font-size: 1.5rem; color: var(--accent); }
-                        .summary-box .lbl { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-muted); margin-top: 4px; }
                         
                         .menu-selector { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
                         .menu-selector label { font-size: 0.78rem; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-muted); }
@@ -161,11 +151,6 @@
                         .help-card li { margin-bottom: 4px; }
                         .help-example { background: var(--surface2); border-radius: 8px; padding: 10px 14px; margin: 10px 0; font-family: var(--mono); font-size: 0.8rem; line-height: 1.7; }
                         .help-tip { color: var(--text-muted); font-size: 0.84rem; }
-                        .help-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 10px 0; }
-                        .help-compare > div { border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; }
-                        .help-compare h3 { font-size: 0.95rem; color: var(--accent); margin-bottom: 4px; }
-                        .help-compare p { margin-bottom: 6px; }
-                        @media (max-width: 420px) { .help-compare { grid-template-columns: 1fr; } }
                         .empty { text-align: center; padding: 48px 24px; color: var(--text-muted); }
                         .empty-icon { font-size: 2.5rem; margin-bottom: 12px; opacity: 0.4; }
                         .empty p { font-size: 0.88rem; margin-top: 6px; }
@@ -176,7 +161,6 @@
                         
                         @media (max-width: 500px) {
                             .view-title, .detail-title { font-size: 1.4rem; }
-                            .summary-box .val { font-size: 1.2rem; }
                             .est-table th, .est-table td { padding: 7px 5px; font-size: 0.75rem; }
                             .qty-input { width: 52px; }
                         }
@@ -242,24 +226,23 @@
                     </div>
                     <div class="detail-stats" id="detail-stats"></div>
                     <div class="detail-actions">
-                        <button class="btn btn-primary" onclick="openEstimator()">Open Estimator</button>
                         <button class="btn-danger" onclick="deleteCurrentMenu()">Delete</button>
                     </div>
                     <div class="card menu-card">
                         <div class="form-group"><label>Menu Name</label><input id="detail-menu-name" type="text" onchange="renameCurrentMenu(this)"></div>
                         <div class="divider"></div>
-                        <div class="menu-rec-row menu-rec-head"><span>Recipe</span><span>Batches</span><span>Purchase / batch</span><span></span></div>
+                        <div class="menu-rec-row menu-rec-head"><span>Recipe</span><span>Batches</span><span>Cost</span><span></span></div>
                         <div id="detail-recipe-list"></div>
                         <button class="btn btn-secondary btn-sm add-row-btn" onclick="addMenuRecipePicker()">+ Add Recipe</button>
                     </div>
-                </div>
-                
-                <div id="screen-estimator" style="display:none">
-                    <div class="estimator-back">
-                        <button class="btn btn-secondary btn-sm" onclick="closeEstimator()">← Menu</button>
-                        <div class="estimator-menu-name" id="estimator-title"></div>
+                    <div class="card" style="margin-top:16px">
+                        <div style="padding:12px 10px"><span class="section-label">By Ingredient</span></div>
+                        <div class="table-scroll"><table class="est-table">
+                            <thead><tr><th>Ingredient</th><th style="text-align:right">Used</th><th style="text-align:right">Cost</th></tr></thead>
+                            <tbody id="ing-breakdown-body"></tbody>
+                            <tfoot id="ing-breakdown-foot"></tfoot>
+                        </table></div>
                     </div>
-                    <div id="estimatorContent"></div>
                 </div>
             </div>
             
@@ -435,28 +418,15 @@
                 currentMenuId = null;
                 document.getElementById('screen-grid').style.display = 'block';
                 document.getElementById('screen-detail').style.display = 'none';
-                document.getElementById('screen-estimator').style.display = 'none';
                 renderMenuGrid();
             }
             function showDetail(menuId) {
                 currentMenuId = menuId;
                 document.getElementById('screen-grid').style.display = 'none';
                 document.getElementById('screen-detail').style.display = 'block';
-                document.getElementById('screen-estimator').style.display = 'none';
                 renderDetail();
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
-            function openEstimator() {
-                const menu = state.menus.find(m => m.id === currentMenuId);
-                if (!menu) return;
-                document.getElementById('screen-grid').style.display = 'none';
-                document.getElementById('screen-detail').style.display = 'none';
-                document.getElementById('screen-estimator').style.display = 'block';
-                document.getElementById('estimator-title').textContent = menu.name;
-                renderEstimator(menu);
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            }
-            function closeEstimator() { showDetail(currentMenuId); }
             
             // ── CARD COLLAPSE ─────────────────────────────────────
             function toggleCard(id) {
@@ -475,50 +445,28 @@
                     return sum + (ing ? costPerUom(ing) * ri.amount : 0);
                 }, 0);
             }
-            // Packages are pooled across the whole menu: each ingredient is rounded up
-            // to whole packages once, then that cost is split back to recipes by share of use.
-            // qtyOverrides ({recipeId: qty}) lets the sweet-spot scan test a qty without saving it.
-            function itemQty(item, qtyOverrides) {
-                return (qtyOverrides && qtyOverrides[item.recipeId] !== undefined) ? qtyOverrides[item.recipeId] : item.qty;
-            }
-            function menuRecipePurchaseTotals(menu, qtyOverrides) {
-                const ingUsage = calcIngUsage(menu, qtyOverrides);
-                const totals = {};
-                menu.recipes.forEach(item => {
+            // Cost = what the ingredients you use are worth (leftovers carry over to the next bake).
+            // Store spend = whole packages to buy, pooled per ingredient across the menu.
+            function menuCost(menu) {
+                return menu.recipes.reduce((sum, item) => {
                     const rec = state.recipes.find(r => r.id === item.recipeId);
-                    if (!rec) return;
-                    const qty = itemQty(item, qtyOverrides);
-                    let total = 0;
-                    rec.ingredients.forEach(ri => {
-                        const u = ingUsage[ri.ingId];
-                        if (!u || u.consumed <= 0) return;
-                        total += (ri.amount * qty / u.consumed) * u.unitsCost;
-                    });
-                    totals[item.recipeId] = total;
-                });
-                return totals;
+                    return sum + (rec ? recipeIdealCost(rec) * item.qty : 0);
+                }, 0);
             }
-            function recipeActualCostPerUnit(menu, recipeId, qty, qtyOverrides) {
-                if (!qty || qty <= 0) return 0;
-                const totals = menuRecipePurchaseTotals(menu, qtyOverrides);
-                return (totals[recipeId] || 0) / qty;
-            }
-            function menuTrueCost(menu) {
+            function menuStoreSpend(menu) {
                 return Object.values(calcIngUsage(menu)).reduce((s, u) => s + u.unitsCost, 0);
             }
-            function menuTotalBatches(menu) { return menu.recipes.reduce((s, i) => s + i.qty, 0); }
-            function calcIngUsage(menu, qtyOverrides) {
+            function calcIngUsage(menu) {
                 const ingUsage = {};
                 menu.recipes.forEach(item => {
                     const rec = state.recipes.find(r => r.id === item.recipeId);
                     if (!rec) return;
-                    const qty = itemQty(item, qtyOverrides);
                     rec.ingredients.forEach(ri => {
                         const ing = state.ingredients.find(i => i.id === ri.ingId);
                         if (!ing) return;
                         if (!ingUsage[ri.ingId]) ingUsage[ri.ingId] = { ing, consumed: 0, cost: 0 };
-                        ingUsage[ri.ingId].consumed += ri.amount * qty;
-                        ingUsage[ri.ingId].cost += costPerUom(ing) * ri.amount * qty;
+                        ingUsage[ri.ingId].consumed += ri.amount * item.qty;
+                        ingUsage[ri.ingId].cost += costPerUom(ing) * ri.amount * item.qty;
                     });
                 });
                 Object.values(ingUsage).forEach(u => {
@@ -526,25 +474,6 @@
                     u.unitsCost = u.unitsOpened * u.ing.price;
                 });
                 return ingUsage;
-            }
-            function sweetSpotHint(menu, recipe, currentQty) {
-                if (!currentQty || currentQty <= 0) return '';
-                const costAt = q => recipeActualCostPerUnit(menu, recipe.id, q, { [recipe.id]: q });
-                const currentCost = costAt(currentQty);
-                if (currentCost === 0) return '';
-                const scanTo = currentQty * 3;
-                let bestQty = null, bestCost = currentCost;
-                for (let q = currentQty + 1; q <= scanTo; q++) {
-                    const c = costAt(q);
-                    if (c < bestCost) { bestCost = c; bestQty = q; break; }
-                }
-                if (!bestQty || (currentCost - bestCost) / currentCost < 0.10) {
-                    if (currentQty === 1) return `<div class="sweet-spot optimal">\u2713 Good quantity</div>`;
-                    const prevCost = costAt(currentQty - 1);
-                    if (prevCost > currentCost) return `<div class="sweet-spot optimal">\u2713 You're at a good quantity</div>`;
-                    return '';
-                }
-                return `<div class="sweet-spot hint">\u2193 Make ${bestQty} batches instead and save $${(currentCost - bestCost).toFixed(2)}/batch</div>`;
             }
             function ingOptsHTML(selectedId) {
                 return `<option value="" disabled ${selectedId ? '' : 'selected'}>— Select an ingredient —</option>` +
@@ -753,7 +682,7 @@
                     el.innerHTML = `<div class="empty"><div class="empty-icon">${cfg.emptyIcons.menus}</div><strong>No menus yet</strong><p>Create your first menu to start estimating.</p></div>`; return;
                 }
                 el.innerHTML = `<div class="menu-grid">${state.menus.map(menu => {
-      const trueCost = menuTrueCost(menu);
+      const cost = menuCost(menu);
       const recipeNames = menu.recipes.map(item => {
       const rec = state.recipes.find(r => r.id === item.recipeId);
       return rec ? `${rec.name} \u00D7${item.qty}` : '';
@@ -766,7 +695,7 @@
     </div>
     <div class="menu-tile-stats">
     <div class="menu-stat"><div class="menu-stat-val">${menu.recipes.length}</div><div class="menu-stat-lbl">Recipes</div></div>
-    <div class="menu-stat"><div class="menu-stat-val">$${trueCost.toFixed(2)}</div><div class="menu-stat-lbl">Purchase Cost</div></div>
+    <div class="menu-stat"><div class="menu-stat-val">$${cost.toFixed(2)}</div><div class="menu-stat-lbl">Cost</div></div>
     </div>
     <div class="menu-tile-recipes">${recipeNames}</div>
     </div>`;
@@ -781,25 +710,35 @@
                 document.getElementById('detail-menu-name').value = menu.name;
                 renderDetailStats(menu);
                 const list = document.getElementById('detail-recipe-list');
-                const recTotals = menuRecipePurchaseTotals(menu);
                 const rows = menu.recipes.map(item => {
                     const rec = state.recipes.find(r => r.id === item.recipeId);
                     if (!rec) return '';
-                    const perBatch = item.qty > 0 ? (recTotals[item.recipeId] || 0) / item.qty : 0;
                     return `<div class="menu-rec-row">
       <span class="menu-rec-name">${rec.name}</span>
       <input class="qty-input" type="number" min="0" inputmode="numeric" value="${item.qty}" oninput="setMenuQty(${rec.id}, this.value)">
-      <span class="menu-rec-cost" id="mr-cost-${rec.id}">$${perBatch.toFixed(2)}</span>
+      <span class="menu-rec-cost" id="mr-cost-${rec.id}">$${(recipeIdealCost(rec) * item.qty).toFixed(2)}</span>
       <button class="btn-danger" style="padding:4px 8px" title="Remove from menu" onclick="removeMenuRecipe(${rec.id})">✕</button>
     </div>`;
                 }).join('');
                 list.innerHTML = rows || '<div class="menu-empty">No recipes in this menu yet.</div>';
+                renderDetailIngredients(menu);
             }
             function renderDetailStats(menu) {
-                const trueCost = menuTrueCost(menu);
                 document.getElementById('detail-stats').innerHTML = `
     <div class="detail-stat"><div class="detail-stat-val">${menu.recipes.length}</div><div class="detail-stat-lbl">Recipes</div></div>
-    <div class="detail-stat"><div class="detail-stat-val">$${trueCost.toFixed(2)}</div><div class="detail-stat-lbl">Purchase Cost</div></div>`;
+    <div class="detail-stat"><div class="detail-stat-val">$${menuCost(menu).toFixed(2)}</div><div class="detail-stat-lbl">Cost</div></div>
+    <div class="detail-spend">Store spend: <strong>$${menuStoreSpend(menu).toFixed(2)}</strong> for whole packages. See the Shopping List.</div>`;
+            }
+            function renderDetailIngredients(menu) {
+                const ingUsage = Object.values(calcIngUsage(menu)).sort((a, b) => a.ing.name.localeCompare(b.ing.name));
+                const total = ingUsage.reduce((s, u) => s + u.cost, 0);
+                document.getElementById('ing-breakdown-body').innerHTML = ingUsage.length ? ingUsage.map(u => `
+    <tr>
+      <td>${u.ing.name}</td>
+      <td class="num">${+u.consumed.toFixed(2)} ${u.ing.uom}</td>
+      <td class="num">$${u.cost.toFixed(2)}</td>
+    </tr>`).join('') : '<tr><td colspan="3" class="menu-empty">No ingredients yet.</td></tr>';
+                document.getElementById('ing-breakdown-foot').innerHTML = `<tr><td>Total</td><td></td><td class="num">$${total.toFixed(2)}</td></tr>`;
             }
             function renameCurrentMenu(input) {
                 const menu = state.menus.find(m => m.id === currentMenuId);
@@ -818,13 +757,9 @@
                 if (!item || !rec) return;
                 item.qty = Math.max(0, parseInt(val) || 0);
                 saveState();
-                // Shared packages mean one recipe's batches can shift every recipe's cost.
-                const recTotals = menuRecipePurchaseTotals(menu);
-                menu.recipes.forEach(it => {
-                    const el = document.getElementById('mr-cost-' + it.recipeId);
-                    if (el) el.textContent = '$' + (it.qty > 0 ? (recTotals[it.recipeId] || 0) / it.qty : 0).toFixed(2);
-                });
+                document.getElementById('mr-cost-' + recipeId).textContent = '$' + (recipeIdealCost(rec) * item.qty).toFixed(2);
                 renderDetailStats(menu);
+                renderDetailIngredients(menu);
             }
             function removeMenuRecipe(recipeId) {
                 const menu = state.menus.find(m => m.id === currentMenuId);
@@ -864,104 +799,6 @@
                 if (!confirm(`Delete "${menu.name}"?`)) return;
                 state.menus = state.menus.filter(m => m.id !== currentMenuId);
                 saveState(); showGrid();
-            }
-            
-            // ── ESTIMATOR ─────────────────────────────────────────
-            function setText(id, val, extraClass) {
-                const el = document.getElementById(id);
-                if (!el) return;
-                el.textContent = val;
-                el.className = 'num' + (extraClass ? ' ' + extraClass : '');
-            }
-            function updateQty(menuId, recipeId, val) {
-                const menu = state.menus.find(m => m.id === menuId);
-                if (!menu) return;
-                const item = menu.recipes.find(r => r.recipeId === recipeId);
-                if (item) item.qty = Math.max(0, parseInt(val) || 0);
-                saveState(); refreshEstimator(menu);
-            }
-            function refreshEstimator(menu) {
-                const ingUsage = calcIngUsage(menu);
-                const totalIngCost = Object.values(ingUsage).reduce((s, u) => s + u.cost, 0);
-                const totalUnitCost = Object.values(ingUsage).reduce((s, u) => s + u.unitsCost, 0);
-                setText('summ-ing-cost', '$' + totalIngCost.toFixed(2));
-                setText('summ-unit-cost', '$' + totalUnitCost.toFixed(2));
-                const recTotals = menuRecipePurchaseTotals(menu);
-                menu.recipes.forEach(item => {
-                    const rec = state.recipes.find(r => r.id === item.recipeId);
-                    if (!rec) return;
-                    const ideal = recipeIdealCost(rec);
-                    const recTotal = recTotals[item.recipeId] || 0;
-                    const actual = item.qty > 0 ? recTotal / item.qty : 0;
-                    setText(`est-actual-${item.recipeId}`, '$' + actual.toFixed(2), actual < ideal ? 'cost-better' : '');
-                    setText(`est-total-${item.recipeId}`, '$' + recTotal.toFixed(2));
-                    const hintEl = document.getElementById(`est-hint-${item.recipeId}`);
-                    if (hintEl) hintEl.innerHTML = sweetSpotHint(menu, rec, item.qty);
-                });
-                const tbody = document.getElementById('ing-breakdown-body');
-                const tfoot = document.getElementById('ing-breakdown-foot');
-                if (tbody) tbody.innerHTML = Object.values(ingUsage).map(u => `
-    <tr>
-      <td>${u.ing.name}</td>
-      <td class="num">${u.consumed.toFixed(2)} ${u.ing.uom}s</td>
-      <td class="num">${u.unitsOpened}</td>
-      <td class="num">$${u.cost.toFixed(2)}</td>
-      <td class="num">$${u.unitsCost.toFixed(2)}</td>
-    </tr>`).join('');
-    if (tfoot) tfoot.innerHTML = `<tr><td>Total</td><td></td><td></td><td class="num">$${totalIngCost.toFixed(2)}</td><td class="num">$${totalUnitCost.toFixed(2)}</td></tr>`;
-    const recFoot = document.getElementById('rec-breakdown-foot');
-    if (recFoot) recFoot.innerHTML = `<tr><td>Total</td><td></td><td></td><td></td><td class="num">$${totalUnitCost.toFixed(2)}</td></tr>`;
-            }
-            function renderEstimator(menu) {
-                const ingUsage = calcIngUsage(menu);
-                const totalIngCost = Object.values(ingUsage).reduce((s, u) => s + u.cost, 0);
-                const totalUnitCost = Object.values(ingUsage).reduce((s, u) => s + u.unitsCost, 0);
-                const recTotals = menuRecipePurchaseTotals(menu);
-                const recipeRows = menu.recipes.map(item => {
-                    const rec = state.recipes.find(r => r.id === item.recipeId);
-                    if (!rec) return '';
-                    const ideal = recipeIdealCost(rec);
-                    const actual = item.qty > 0 ? (recTotals[item.recipeId] || 0) / item.qty : 0;
-                    return `<tr>
-      <td>
-        <div>${rec.name}</div>
-        <div id="est-hint-${rec.id}">${sweetSpotHint(menu, rec, item.qty)}</div>
-      </td>
-      <td class="num">$${ideal.toFixed(2)}</td>
-      <td class="num"><input class="qty-input" type="number" min="0" value="${item.qty}" oninput="updateQty(${menu.id}, ${rec.id}, this.value)"></td>
-      <td class="num ${actual < ideal ? 'cost-better' : ''}" id="est-actual-${rec.id}">$${actual.toFixed(2)}</td>
-      <td class="num" id="est-total-${rec.id}">$${(actual * item.qty).toFixed(2)}</td>
-    </tr>`;
-                }).join('');
-                const ingRows = Object.values(ingUsage).map(u => `
-    <tr>
-      <td>${u.ing.name}</td>
-      <td class="num">${u.consumed.toFixed(2)} ${u.ing.uom}s</td>
-      <td class="num">${u.unitsOpened}</td>
-      <td class="num">$${u.cost.toFixed(2)}</td>
-      <td class="num">$${u.unitsCost.toFixed(2)}</td>
-    </tr>`).join('');
-    document.getElementById('estimatorContent').innerHTML = `
-    <div class="summary-grid">
-      <div class="summary-box"><div class="val" id="summ-ing-cost">$${totalIngCost.toFixed(2)}</div><div class="lbl">Usage Cost</div></div>
-      <div class="summary-box"><div class="val" id="summ-unit-cost">$${totalUnitCost.toFixed(2)}</div><div class="lbl">Purchase Cost</div></div>
-    </div>
-    <div class="card" style="margin-bottom:16px">
-      <div style="padding:12px 10px"><span class="section-label">By Recipe</span> <span style="font-size:0.75rem;color:var(--text-muted);margin-left:8px">Edit batches — purchase cost updates as you cross package boundaries</span></div>
-      <div class="table-scroll"><table class="est-table">
-        <thead><tr><th>Recipe</th><th style="text-align:right">Usage Cost</th><th style="text-align:right">Batches</th><th style="text-align:right">Purchase Cost/Batch</th><th style="text-align:right">Total</th></tr></thead>
-        <tbody>${recipeRows}</tbody>
-        <tfoot id="rec-breakdown-foot"><tr><td>Total</td><td></td><td></td><td></td><td class="num">$${totalUnitCost.toFixed(2)}</td></tr></tfoot>
-      </table></div>
-    </div>
-    <div class="card">
-      <div style="padding:12px 10px"><span class="section-label">By Ingredient</span></div>
-      <div class="table-scroll"><table class="est-table">
-        <thead><tr><th>Ingredient</th><th style="text-align:right">Consumed</th><th style="text-align:right">Pkgs Opened</th><th style="text-align:right">Usage $</th><th style="text-align:right">Purchase $</th></tr></thead>
-        <tbody id="ing-breakdown-body">${ingRows}</tbody>
-        <tfoot id="ing-breakdown-foot"><tr><td>Total</td><td></td><td></td><td class="num">$${totalIngCost.toFixed(2)}</td><td class="num">$${totalUnitCost.toFixed(2)}</td></tr></tfoot>
-      </table></div>
-    </div>`;
             }
             
             // ── SHOPPING LIST ─────────────────────────────────────
@@ -1014,7 +851,6 @@
                 const ce = h.costExample || { name: 'an ingredient', uom: 'oz', amount: 2, size: 16, price: 8.00 };
                 const money = n => '$' + n.toFixed(2);
                 const recipeCost = ce.amount / ce.size * ce.price;
-                const fullBatches = Math.round(ce.size / ce.amount);
                 const preloaded = (cfg.defaultState.ingredients || []).length;
                 const event = h.event || 'an upcoming market or event';
                 document.getElementById('helpContent').innerHTML = `
@@ -1029,7 +865,7 @@
         <li><strong>Ingredients:</strong> check the prices and package sizes of what you buy.</li>
         <li><strong>Recipes:</strong> add your recipes and how much of each ingredient one batch uses.</li>
         <li><strong>Menus:</strong> make a menu for an event, with how many batches of each recipe you'll make.</li>
-        <li><strong>Estimator and Shopping List:</strong> see what it will cost and what to buy.</li>
+        <li><strong>Shopping List:</strong> see what to buy and what you'll spend at the store.</li>
       </ol>
     </div>
 
@@ -1054,33 +890,26 @@
         <li>Amounts are for <strong>one batch</strong>.</li>
         <li>Each amount is in that ingredient's unit (shown next to its name).</li>
       </ul>
-      <p>The cost shown on a recipe is its <strong>Usage Cost</strong>. See the Estimator section below for what that means.</p>
+      <p>The cost shown on a recipe is the <strong>Cost</strong> of one batch: what the ingredients it uses are worth.</p>
     </div>
 
     <div class="help-card">
       <h2>Menus</h2>
       <p>A menu is your plan for one event, like ${event}. Tap <strong>+ New Menu</strong>, name it and add the recipes you're making.</p>
-      <p>Tap a menu to see its recipes, with the number of batches and the purchase cost per batch for each. You can change the batches, add a recipe with <strong>+ Add Recipe</strong>, remove one with <strong>✕</strong> or rename the menu. Changes save as you go. From there you can also <strong>Open Estimator</strong> or <strong>Delete</strong> the menu.</p>
+      <p>Tap a menu to see its recipes. Set how many <strong>Batches</strong> of each you'll make, and the costs update right away. You can add a recipe with <strong>+ Add Recipe</strong>, remove one with <strong>✕</strong>, rename the menu or <strong>Delete</strong> it. Changes save as you go.</p>
+      <p>The <strong>By Ingredient</strong> table shows how much of each ingredient the whole menu uses and what it costs.</p>
     </div>
 
     <div class="help-card">
-      <h2>The Estimator</h2>
-      <p>This is where you find out what your menu really costs. Every recipe gets two costs, and the difference between them matters:</p>
-      <div class="help-compare">
-        <div><h3>Usage Cost</h3><p>Only what goes into the recipe, as if you could buy exactly that much.</p><p class="help-tip">Stays the same no matter how many batches you make.</p></div>
-        <div><h3>Purchase Cost</h3><p>What you actually pay at the store, because you have to buy whole packages.</p><p class="help-tip">Use this one to plan your spending. Per batch, it drops as you make more batches.</p></div>
-      </div>
-      <div class="help-example">Example: ${ce.name}<br>One batch uses ${ce.amount} ${ce.uom}. A package is ${ce.size} ${ce.uom} for ${money(ce.price)}.<br>Usage Cost: ${ce.amount} ÷ ${ce.size} × ${money(ce.price)} = <strong>${money(recipeCost)}</strong> per batch<br>Purchase Cost for 1 batch: you have to buy the whole package, so <strong>${money(ce.price)}</strong><br>Purchase Cost for ${fullBatches} batches: they use up exactly one package, so <strong>${money(ce.price / fullBatches)}</strong> per batch</div>
-      <p><strong>The difference is your leftovers.</strong> Purchase Cost minus Usage Cost is the value of the ingredients left over in packages you opened. They aren't wasted, but you've paid for them now.</p>
-      <p><strong>Shared ingredients count once.</strong> If two recipes on a menu both use flour, ${app} adds up the flour for the whole menu and buys whole packages only once. Each recipe's Purchase Cost is its share of those packages, based on how much it uses. That means changing the batches of one recipe can change the Purchase Cost of another recipe that shares an ingredient with it.</p>
-      <p>Change the number in the <strong>Batches</strong> column and everything updates right away.</p>
-      <p><strong>Sweet spot hints.</strong> Sometimes making a few more batches lowers your cost per batch, because you use up packages you're already buying. When that saves enough to matter, you'll see a hint under the recipe like <em>"↓ Make 4 batches instead and save $0.85/batch."</em> A <em>"✓ Good quantity"</em> hint means you're already in a good spot.</p>
-      <p>The <strong>By Ingredient</strong> table shows how much of each ingredient the whole menu uses and how many packages you'll open.</p>
+      <h2>Cost</h2>
+      <p><strong>Cost</strong> is what the ingredients you use are worth. It's the real cost of making your menu.</p>
+      <div class="help-example">Example: ${ce.name}<br>One batch uses ${ce.amount} ${ce.uom}. A package is ${ce.size} ${ce.uom} for ${money(ce.price)}.<br>Cost: ${ce.amount} ÷ ${ce.size} × ${money(ce.price)} = <strong>${money(recipeCost)}</strong> per batch</div>
+      <p>You still have to buy whole packages, so your trip to the store usually costs more. That extra isn't wasted: the leftovers go into your next bake. The menu screen shows this as <strong>Store spend</strong>.</p>
     </div>
 
     <div class="help-card">
       <h2>Shopping List</h2>
-      <p>Pick a menu to see how many packages of each ingredient to buy and the estimated total. It uses the batch numbers you set in the Estimator.</p>
+      <p>Pick a menu to see how many packages of each ingredient to buy and your store spend. It uses the batch numbers you set on the menu. If two recipes both use flour, the flour is added up for the whole menu, so you only buy the packages you need.</p>
     </div>
 
     <div class="help-card">
